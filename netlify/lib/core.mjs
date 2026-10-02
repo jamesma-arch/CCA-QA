@@ -25,15 +25,16 @@ try{
  if(!auth)return res({error:'Please sign in to continue.'},401);
  const all=async prefix=>{const result=await store.list({prefix});return (await Promise.all(result.blobs.map(x=>store.get(x.key,{type:'json'})))).filter(Boolean)};
  const activities=async()=>{const existing=await all('activity/');return [...seed.filter(a=>!existing.some(e=>e.id===a.id)),...existing]};
- if(action==='data'&&method==='GET')return res({role:auth.role,activities:await activities(),reviews:auth.role==='admin'?await all('review/'):[]});
+ if(action==='data'&&method==='GET'){const reviews=await all('review/');return res({role:auth.role,activities:await activities(),reviews:auth.role==='admin'?reviews:[],reviewProgress:reviews.filter(r=>r.reviewType).map(({activityId,academicYear,seasonNumber,reviewType})=>({activityId,academicYear,seasonNumber,reviewType}))})}
  if(action==='review'&&method==='POST'){
   const activity=(await activities()).find(a=>a.id===b.activityId&&a.active);if(!activity)return res({error:'Activity is unavailable. Refresh the activity list.'},400);
   if(!str(b.reviewer,100)||!str(b.review,5000)||!/^\d{4}-\d{2}-\d{2}$/.test(b.date??'')||!Number.isInteger(b.score)||b.score<1||b.score>5||!Array.isArray(b.checklist)||b.checklist.length!==checks.length||b.checklist.some(v=>!['yes','no','na'].includes(v))||!['Routine','Follow-up','Urgent'].includes(b.priority)||!str(b.nextSteps??'',5000)&&b.priority!=='Routine')return res({error:'Complete the observation, checklist, score and required next steps.'},400);
   if(!/^(?:[1-9]|10)$/.test(String(b.sessions??'')))return res({error:'Select between 1 and 10 sessions observed.'},400);
+  if(!['Mid-season','End-of-season'].includes(b.reviewType)||!/^\d{4}\/\d{2}$/.test(b.academicYear??'')||Number(b.academicYear.slice(5))!==(Number(b.academicYear.slice(0,4))+1)%100||!['1','2','3'].includes(String(b.seasonNumber))||!['7','8','9'].includes(String(b.seasonSessions)))return res({error:'Select the academic year, season, review type and 7–9 sessions in the season.'},400);
   if(b.due&&!/^\d{4}-\d{2}-\d{2}$/.test(b.due))return res({error:'Invalid due date.'},400);
   const nextSteps=str(b.nextSteps??'',5000),strengths=str(b.strengths??'',5000),sessions=String(b.sessions),owner=str(b.owner??'',100),due=str(b.due??'',20);
   if([nextSteps,strengths,sessions,owner,due].some(v=>v===null))return res({error:'One or more fields exceed the text limit.'},400);
-  const review={id:randomUUID(),activityId:activity.id,activitySnapshot:activity,reviewer:str(b.reviewer,100),date:b.date,score:b.score,checklist:b.checklist,priority:b.priority,review:str(b.review,5000),nextSteps,strengths,sessions,owner,due,status:'Open',createdAt:new Date().toISOString()};await store.setJSON('review/'+review.id,review);return res({review},201);
+  const review={id:randomUUID(),activityId:activity.id,activitySnapshot:activity,academicYear:b.academicYear,seasonNumber:String(b.seasonNumber),reviewType:b.reviewType,seasonSessions:Number(b.seasonSessions),reviewer:str(b.reviewer,100),date:b.date,score:b.score,checklist:b.checklist,priority:b.priority,review:str(b.review,5000),nextSteps,strengths,sessions,owner,due,status:'Open',createdAt:new Date().toISOString()};await store.setJSON('review/'+review.id,review);return res({review},201);
  }
  if(auth.role!=='admin')return res({error:'Administrator access required.'},403);
  if(action==='import'&&method==='POST'){
