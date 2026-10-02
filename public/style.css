@@ -17,3 +17,5 @@
 .review-plan{background:#f4f7fa;border:1px solid var(--line);border-radius:10px;padding:18px;margin:18px 0}.review-cycle{margin:0 0 18px}.review-cycle p{font-size:13px;margin:8px 0}.badge.pending{background:#fff1d6;color:#805c14}
 
 .activity-heading{display:flex;align-items:flex-start;gap:14px}.activity-heading-text{flex:1;min-width:0}.activity-art{flex:0 0 88px;width:88px;margin-top:3px}.activity-art svg{display:block;width:100%;height:auto}.activity-heading h2{min-height:0;overflow-wrap:anywhere}.activity-heading .badges{gap:6px}.activity-heading .provider{overflow-wrap:anywhere}@media(max-width:420px){.activity-art{flex-basis:68px;width:68px}.activity-heading{gap:10px}}
+
+.activity-art{flex-basis:94px;width:94px;filter:drop-shadow(0 4px 6px #17324a10)}@media(max-width:420px){.activity-art{flex-basis:72px;width:72px}}
