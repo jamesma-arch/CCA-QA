@@ -29,8 +29,9 @@ try{
  if(action==='review'&&method==='POST'){
   const activity=(await activities()).find(a=>a.id===b.activityId&&a.active);if(!activity)return res({error:'Activity is unavailable. Refresh the activity list.'},400);
   if(!str(b.reviewer,100)||!str(b.review,5000)||!/^\d{4}-\d{2}-\d{2}$/.test(b.date??'')||!Number.isInteger(b.score)||b.score<1||b.score>5||!Array.isArray(b.checklist)||b.checklist.length!==checks.length||b.checklist.some(v=>!['yes','no','na'].includes(v))||!['Routine','Follow-up','Urgent'].includes(b.priority)||!str(b.nextSteps??'',5000)&&b.priority!=='Routine')return res({error:'Complete the observation, checklist, score and required next steps.'},400);
+  if(!/^(?:[1-9]|10)$/.test(String(b.sessions??'')))return res({error:'Select between 1 and 10 sessions observed.'},400);
   if(b.due&&!/^\d{4}-\d{2}-\d{2}$/.test(b.due))return res({error:'Invalid due date.'},400);
-  const nextSteps=str(b.nextSteps??'',5000),strengths=str(b.strengths??'',5000),sessions=str(b.sessions??'',100),owner=str(b.owner??'',100),due=str(b.due??'',20);
+  const nextSteps=str(b.nextSteps??'',5000),strengths=str(b.strengths??'',5000),sessions=String(b.sessions),owner=str(b.owner??'',100),due=str(b.due??'',20);
   if([nextSteps,strengths,sessions,owner,due].some(v=>v===null))return res({error:'One or more fields exceed the text limit.'},400);
   const review={id:randomUUID(),activityId:activity.id,activitySnapshot:activity,reviewer:str(b.reviewer,100),date:b.date,score:b.score,checklist:b.checklist,priority:b.priority,review:str(b.review,5000),nextSteps,strengths,sessions,owner,due,status:'Open',createdAt:new Date().toISOString()};await store.setJSON('review/'+review.id,review);return res({review},201);
  }
