@@ -25,7 +25,7 @@ try{
  if(!auth)return res({error:'Please sign in to continue.'},401);
  const all=async prefix=>{const result=await store.list({prefix});return (await Promise.all(result.blobs.map(x=>store.get(x.key,{type:'json'})))).filter(Boolean)};
  const activities=async()=>{const existing=await all('activity/');return [...seed.filter(a=>!existing.some(e=>e.id===a.id)),...existing]};
- if(action==='data'&&method==='GET'){const reviews=await all('review/');return res({role:auth.role,activities:await activities(),reviews:auth.role==='admin'?reviews:[],reviewProgress:reviews.filter(r=>r.reviewType).map(({activityId,academicYear,seasonNumber,reviewType})=>({activityId,academicYear,seasonNumber,reviewType}))})}
+ if(action==='data'&&method==='GET'){const reviews=await all('review/');return res({role:auth.role,activities:await activities(),reviews:auth.role==='admin'?reviews:[],followUps:auth.role==='admin'?await all('followup/'):[],reviewProgress:reviews.filter(r=>r.reviewType).map(({activityId,academicYear,seasonNumber,reviewType})=>({activityId,academicYear,seasonNumber,reviewType}))})}
  if(action==='review'&&method==='POST'){
   const activity=(await activities()).find(a=>a.id===b.activityId&&a.active);if(!activity)return res({error:'Activity is unavailable. Refresh the activity list.'},400);
   if(!str(b.reviewer,100)||!str(b.review,5000)||!/^\d{4}-\d{2}-\d{2}$/.test(b.date??'')||!Number.isInteger(b.score)||b.score<1||b.score>5||!Array.isArray(b.checklist)||b.checklist.length!==checks.length||b.checklist.some(v=>!['yes','no','na'].includes(v))||!['Routine','Follow-up','Urgent'].includes(b.priority)||!str(b.nextSteps??'',5000)&&b.priority!=='Routine')return res({error:'Complete the observation, checklist, score and required next steps.'},400);
@@ -37,6 +37,15 @@ try{
   const review={id:randomUUID(),activityId:activity.id,activitySnapshot:activity,academicYear:b.academicYear,seasonNumber:String(b.seasonNumber),reviewType:b.reviewType,reviewer:str(b.reviewer,100),date:b.date,score:b.score,checklist:b.checklist,priority:b.priority,review:str(b.review,5000),nextSteps,strengths,sessions,owner,due,status:'Open',createdAt:new Date().toISOString()};await store.setJSON('review/'+review.id,review);return res({review},201);
  }
  if(auth.role!=='admin')return res({error:'Administrator access required.'},403);
+ if(action==='followup'&&method==='POST'){
+  if(!/^[a-zA-Z0-9-]{1,80}$/.test(b.reviewId??''))return res({error:'Invalid review identifier.'},400);
+  const original=await store.get('review/'+b.reviewId,{type:'json'});if(!original)return res({error:'Review not found.'},404);
+  if(!str(b.reviewer,100)||!str(b.review,5000)||!/^\d{4}-\d{2}-\d{2}$/.test(b.date??'')||!Number.isInteger(b.score)||b.score<1||b.score>5||!['In progress','Closed'].includes(b.status)||b.status==='Closed'&&b.score<4)return res({error:'Complete the follow-up review. Scores below 4 must remain In progress.'},400);
+  const nextSteps=str(b.nextSteps??'',5000),owner=str(b.owner??'',100),due=str(b.due??'',20);
+  if([nextSteps,owner,due].some(v=>v===null)||b.status!=='Closed'&&!nextSteps||due&&!/^\d{4}-\d{2}-\d{2}$/.test(due))return res({error:'Add next steps for an ongoing follow-up and a valid due date.'},400);
+  const followUp={id:randomUUID(),reviewId:original.id,activityId:original.activityId,reviewer:str(b.reviewer,100),date:b.date,score:b.score,review:str(b.review,5000),nextSteps,owner,due,status:b.status,createdAt:new Date().toISOString()};
+  await store.setJSON('followup/'+followUp.id,followUp);original.status=b.status;original.owner=owner||original.owner;original.due=due;await store.setJSON('review/'+original.id,original);return res({followUp,review:original},201);
+ }
  if(action==='import'&&method==='POST'){
   if(!Array.isArray(b.activities)||!b.activities.length||b.activities.length>50)return res({error:'Import between 1 and 50 activities per request.'},400);
   let incoming;try{incoming=b.activities.map(validateActivity)}catch(e){return res({error:e.message},400)}
