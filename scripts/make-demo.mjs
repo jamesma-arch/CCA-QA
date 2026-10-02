@@ -1,10 +1,11 @@
 import {readFile,writeFile} from 'node:fs/promises';
+import {build} from 'esbuild';
 let js=await readFile('public/app.js','utf8');
-const language=(await readFile('public/language.js','utf8')).replaceAll('export function ','function ');
-js=js.replace("import {toggleLanguage,translated} from './language.js';",'');
 const seed=await readFile('public/seed.json','utf8');
 js=js.replace("const seed=await fetch('seed.json').then(r=>r.json());",'const seed='+seed+';');
-js=js.replace("app.innerHTML='<div class=\"loading\">Opening the staff portal…</div>';api('data').then(data=>{Object.assign(state,data);render()}).catch(()=>login());",'login();');
-js=js.replace("async function api(action,body){", "async function api(action,body){throw Error('This is the offline demo. Choose Explore the demo; use the deployed app to sign in.');");
-let html=(await readFile('public/index.html','utf8')).replace('<link rel="icon" href="favicon.svg">','').replace('<link rel="stylesheet" href="style.css">','<style>'+await readFile('public/style.css','utf8')+'</style>').replace('<script type="module" src="app.js"></script>','').replace('</body>','<script type="module">'+language+'\n'+js+'</script></body>');
+js=js.replace("app.innerHTML='<div class=\"loading\">Opening the staff portal…</div>';api('data').then(data=>{Object.assign(state,data);state.tab=state.role==='admin'?'analytics':'activities';render()}).catch(()=>login());",'login();');
+js=js.replace('async function api(action,body){',"async function api(action,body){throw Error('This is the offline demo. Choose Explore the demo; use the deployed app to sign in.');");
+const result=await build({stdin:{contents:js,resolveDir:process.cwd()+'/public',sourcefile:'app.js'},bundle:true,write:false,format:'esm',minify:true});
+const code=result.outputFiles[0].text.replaceAll('</script','<\\/script');
+let html=(await readFile('public/index.html','utf8')).replace('<link rel="icon" href="favicon.svg">','').replace('<link rel="stylesheet" href="style.css">','<style>'+await readFile('public/style.css','utf8')+'</style>').replace('<script type="module" src="app.js"></script>','').replace('</body>','<script type="module">'+code+'</script></body>');
 await writeFile('CCA_QA_Demo.html',html);console.log('Bilingual offline demo generated');

@@ -1,3 +1,4 @@
+import {keyFor} from '../../public/import-data.js';
 import {createHmac,timingSafeEqual,randomUUID} from 'node:crypto';
 export const checks=['Register / attendance accurate','Clear instructions / routines','Resources ready and suitable','TA / staff role being used well','Positive relationships visible','Students engaged and purposeful','Safe organisation and supervision','Behaviour expectations clear','Differentiation / support evident','Dismissal / parent pick-up clear'];
 const res=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store',...extra}});
@@ -16,7 +17,7 @@ try{
  if(cookie){const [payload,sig]=cookie.split('.');if(sig&&equal(sign(payload,env.SESSION_SECRET),sig)){try{auth=JSON.parse(Buffer.from(payload,'base64url'));if(auth.exp<Date.now()||!['staff','admin'].includes(auth.role)||auth.rev!==sign(auth.role==='admin'?env.ADMIN_ACCESS_CODE:env.STAFF_ACCESS_CODE,env.SESSION_SECRET))auth=null}catch{auth=null}}}
  if(action==='login'&&method==='POST'){
   const role=equal(b.code??'',env.ADMIN_ACCESS_CODE)?'admin':equal(b.code??'',env.STAFF_ACCESS_CODE)?'staff':null;
-  if(!role)return res({error:'Access code not recognised.'},401);
+  if(!role||b.role&&b.role!==role)return res({error:'Access code not recognised.'},401);
   const payload=Buffer.from(JSON.stringify({role,exp:Date.now()+8*3600000,rev:sign(role==='admin'?env.ADMIN_ACCESS_CODE:env.STAFF_ACCESS_CODE,env.SESSION_SECRET)})).toString('base64url');
   return res({role},200,{'Set-Cookie':`cca_session=${payload}.${sign(payload,env.SESSION_SECRET)}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=28800`});
  }
@@ -34,6 +35,14 @@ try{
   const review={id:randomUUID(),activityId:activity.id,activitySnapshot:activity,reviewer:str(b.reviewer,100),date:b.date,score:b.score,checklist:b.checklist,priority:b.priority,review:str(b.review,5000),nextSteps,strengths,sessions,owner,due,status:'Open',createdAt:new Date().toISOString()};await store.setJSON('review/'+review.id,review);return res({review},201);
  }
  if(auth.role!=='admin')return res({error:'Administrator access required.'},403);
+ if(action==='import'&&method==='POST'){
+  if(!Array.isArray(b.activities)||!b.activities.length||b.activities.length>50)return res({error:'Import between 1 and 50 activities per request.'},400);
+  let incoming;try{incoming=b.activities.map(validateActivity)}catch(e){return res({error:e.message},400)}
+  if(new Set(incoming.map(keyFor)).size!==incoming.length)return res({error:'Duplicate activities in import.'},400);
+  const existing=await activities();let saved=0,added=0,updated=0;
+  try{for(const item of incoming){const previous=existing.find(a=>keyFor(a)===keyFor(item));const a={...previous,...item,id:previous?.id||randomUUID()};await store.setJSON('activity/'+a.id,a);existing.push(a);saved++;previous?updated++:added++}}catch{return res({error:'Import interrupted. Refresh and retry; matching activities will be updated.',saved,added,updated},503)}
+  return res({saved,added,updated});
+ }
  if(action==='activity'&&method==='POST'){let a;try{a=validateActivity(b)}catch(e){return res({error:e.message},400)}a.id=b.id||randomUUID();if(!/^[a-zA-Z0-9-]{1,80}$/.test(a.id))return res({error:'Invalid activity identifier.'},400);const previous=(await activities()).find(x=>x.id===a.id);a={...previous,...a};await store.setJSON('activity/'+a.id,a);return res({activity:a});}
  if(action==='status'&&method==='POST'){if(!/^[a-zA-Z0-9-]{1,80}$/.test(b.id??'')||!['Open','In progress','Closed'].includes(b.status))return res({error:'Invalid action status.'},400);const review=await store.get('review/'+b.id,{type:'json'});if(!review)return res({error:'Review not found.'},404);review.status=b.status;await store.setJSON('review/'+review.id,review);return res({review});}
  return res({error:'Not found.'},404);

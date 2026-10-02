@@ -88,7 +88,7 @@ npm run build
 npm run demo
 ```
 
-Twelve automated server-side tests cover authentication, permissions, validation, concurrent submissions, shared administrator reads, archived activities, action status, code rotation and fail-closed configuration. The Netlify function imports successfully with the installed SDK. A live Netlify storage round-trip needs to be checked after deployment; it cannot be verified using the standalone demo. Browser visual QA was blocked in the build environment. DOM-based interaction checks passed for English/Thai switching, all ten guidance panels, form-value retention, Thai submissions and action-status updates.
+Nine automated server-side tests cover authentication, permissions, validation, concurrent submissions, shared administrator reads, archived activities, action status, code rotation and fail-closed configuration. The Netlify function imports successfully with the installed SDK. A live Netlify storage round-trip needs to be checked after deployment; it cannot be verified using the standalone demo. Browser visual QA was blocked in the build environment. DOM-based interaction checks passed for English/Thai switching, all ten guidance panels, form-value retention, Thai submissions and action-status updates.
 
 The source has responsive mobile/desktop CSS, keyboard-accessible native form controls, escaped rendered text, required fields, length limits, same-origin write checks and CSV formula escaping. Netlify's function rate-limit configuration allows 60 requests per minute per IP; availability depends on the project's platform support. A whole school may share one outbound IP, so review that setting if staff see rate-limit errors.
 
@@ -101,6 +101,11 @@ The source has responsive mobile/desktop CSS, keyboard-accessible native form co
 
 Documentation: [Netlify Blobs](https://docs.netlify.com/build/data-and-storage/netlify-blobs/) · [Functions API](https://docs.netlify.com/build/functions/api/)
 
-## Deployment readiness
+## Staff and Admin areas
+The welcome page has separate Staff and Admin sign-in forms. Use the staff code for observations and the administrator code for analytics, feedback/action management and activity imports. The server rejects a code used in the wrong area.
 
-The function checks access configuration before opening storage and returns a clear setup error if required settings are missing or invalid. `GET /.netlify/functions/api?action=health` reports configuration readiness and names of missing settings, without returning secret values. This check does not verify a storage write. Every Netlify build runs `npm test` before producing the site.
+Admin → QA analytics shows date, provider, school and season filters; average scores, score distribution, checklist concerns, outstanding/overdue actions, provider comparisons and active activities awaiting observation. Not observed/N/A is excluded from assessed checklist counts.
+
+Admin → Upload activities accepts Excel `.xlsx` (first worksheet) and CSV files, up to 5 MB and 1,000 rows. Download the CSV template or match your own headings. Required fields are activity name, provider, year groups, day, school and season; school and season can use selected defaults. Preview and correct invalid rows before importing. Matches on activity name, provider, year groups, day, school and season are updated; unmatched rows are added. Blank optional cells clear those details on matches. Existing activities outside the upload and all historic QA snapshots are retained. Imports are saved in batches; interrupted uploads can be retried without creating matching duplicates.
+
+In Netlify, configure STAFF_ACCESS_CODE and ADMIN_ACCESS_CODE (different values), plus SESSION_SECRET (at least 32 characters), for Production/Functions, then redeploy. Never commit access codes to GitHub.
