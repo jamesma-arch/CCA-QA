@@ -1,0 +1,18 @@
+{
+  "name": "harrow-cca-quality-assurance",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "preview": "node scripts/preview.mjs",
+    "demo": "node scripts/make-demo.mjs"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^10.0.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

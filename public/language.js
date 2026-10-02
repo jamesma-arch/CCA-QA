@@ -1,0 +1,235 @@
+// Translate interface text only; form values and saved feedback stay unchanged.
+const TH = {
+  "Leave this observation without submitting it?": "ออกจากแบบฟอร์มนี้โดยไม่ส่งผลการสังเกตหรือไม่?",
+  "CCA · Quality Assurance": "CCA · การประกันคุณภาพ",
+  "CCA administrator": "ผู้ดูแลระบบ CCA",
+  "Staff access": "สำหรับบุคลากร",
+  "Exit demo": "ออกจากโหมดทดลอง",
+  "Sign out": "ออกจากระบบ",
+  "Demo mode": "โหมดทดลอง",
+  " · Try the forms and admin tools. Changes last for this session only and are not shared with staff.": " · ทดลองใช้แบบฟอร์มและเครื่องมือผู้ดูแล ข้อมูลจะอยู่เฉพาะในการใช้งานครั้งนี้ และไม่แชร์กับบุคลากรคนอื่น",
+  "Provider quality assurance": "การประกันคุณภาพผู้จัดกิจกรรม",
+  "Every observation.": "ทุกการสังเกต",
+  "A better experience.": "เพื่อประสบการณ์ที่ดียิ่งขึ้น",
+  "Record what is working, identify support needed and keep our CCA provision moving forward.": "บันทึกสิ่งที่ทำได้ดี ระบุสิ่งที่ต้องการการสนับสนุน และพัฒนาคุณภาพกิจกรรม CCA ของเรา",
+  "For Harrow Bangkok staff": "สำหรับบุคลากร Harrow Bangkok",
+  "Lower School & Upper School": "ฝ่ายประถมและฝ่ายมัธยม",
+  "Staff portal": "ระบบสำหรับบุคลากร",
+  "Welcome back": "ยินดีต้อนรับ",
+  "Enter your staff or administrator access code.": "กรุณากรอกรหัสสำหรับบุคลากรหรือผู้ดูแลระบบ",
+  "Access code": "รหัสเข้าใช้งาน",
+  "Sign in": "เข้าสู่ระบบ",
+  "Contact the CCA team if you need access.": "หากต้องการเข้าใช้งาน กรุณาติดต่อทีม CCA",
+  "Explore the demo": "ทดลองใช้งาน",
+  "Co-curricular provision": "การจัดกิจกรรมเสริมหลักสูตร",
+  "CCA quality assurance": "การประกันคุณภาพกิจกรรม CCA",
+  "Observations & actions": "ผลการสังเกตและการดำเนินการ",
+  "Activity directory": "รายการกิจกรรม",
+  "Choose an activity to record your provider observation.": "เลือกกิจกรรมที่ต้องการบันทึกการสังเกตผู้จัดกิจกรรม",
+  "Review feedback and track the next steps.": "ตรวจสอบความคิดเห็นและติดตามการดำเนินการต่อไป",
+  "Keep the information staff see up to date.": "ปรับปรุงข้อมูลที่บุคลากรใช้ให้เป็นปัจจุบัน",
+  "Refresh": "โหลดข้อมูลล่าสุด",
+  "Add activity": "เพิ่มกิจกรรม",
+  "Export CSV": "ส่งออกไฟล์ CSV",
+  "Print summaries": "พิมพ์สรุปผล",
+  "Activities": "กิจกรรม",
+  "Manage activities": "จัดการกิจกรรม",
+  "Find an activity or provider": "ค้นหากิจกรรมหรือผู้จัดกิจกรรม",
+  "Search activities, providers or year groups": "ค้นหากิจกรรม ผู้จัดกิจกรรม หรือระดับชั้น",
+  "School": "ฝ่าย",
+  "All schools": "ทุกฝ่าย",
+  "Lower School": "ฝ่ายประถม",
+  "Upper School": "ฝ่ายมัธยม",
+  "Day": "วัน",
+  "All days": "ทุกวัน",
+  "Monday": "วันจันทร์",
+  "Tuesday": "วันอังคาร",
+  "Wednesday": "วันพุธ",
+  "Thursday": "วันพฤหัสบดี",
+  "Friday": "วันศุกร์",
+  "Saturday": "วันเสาร์",
+  "Sunday": "วันอาทิตย์",
+  "Room / location": "ห้อง / สถานที่",
+  "Season": "ซีซัน",
+  "School lead": "ผู้รับผิดชอบของโรงเรียน",
+  "Not set": "ยังไม่ระบุ",
+  "Record observation": "บันทึกการสังเกต",
+  "No matching activities": "ไม่พบกิจกรรมที่ตรงกับการค้นหา",
+  "Try another search or ask the CCA administrator to add the activity.": "ลองค้นหาใหม่ หรือติดต่อผู้ดูแล CCA เพื่อเพิ่มกิจกรรม",
+  "Back to activities": "กลับไปที่รายการกิจกรรม",
+  "Provider observation": "การสังเกตผู้จัดกิจกรรม",
+  "A short drop-in, a clear record, useful next steps.": "สังเกตกิจกรรมช่วงสั้น ๆ บันทึกให้ชัดเจน และกำหนดขั้นตอนต่อไป",
+  "Provider contact": "ผู้ติดต่อของผู้จัดกิจกรรม",
+  "Review stage": "วันที่ทบทวน",
+  "Sessions observed": "จำนวนครั้งที่สังเกต",
+  "Priority": "ต้องติดตามเป็นพิเศษ",
+  "Strengths already identified": "จุดเด่นที่พบก่อนหน้านี้",
+  "Improvement priorities": "สิ่งที่ควรปรับปรุงเป็นลำดับแรก",
+  "Existing follow-up / context": "ข้อมูลเดิม / การติดตามที่ผ่านมา",
+  "No information recorded": "ยังไม่มีข้อมูล",
+  "New observation": "บันทึกการสังเกตใหม่",
+  "Your review of the session": "ความคิดเห็นต่อกิจกรรมครั้งนี้",
+  "Fields marked * are required. Keep comments focused on provider practice and avoid pupil names.": "ช่องที่มี * จำเป็นต้องกรอก ให้ความคิดเห็นเกี่ยวกับการจัดกิจกรรม และไม่ระบุชื่อนักเรียน",
+  "Your name": "ชื่อผู้สังเกต",
+  "Observation date": "วันที่สังเกต",
+  "Sessions observed during this visit": "จำนวนครั้งที่สังเกตในการเข้าชมนี้",
+  "Quick drop-in checklist": "รายการตรวจสอบระหว่างการสังเกต",
+  "Select observed, needs attention or not observed for each point.": "เลือก พบตามเกณฑ์ / ต้องปรับปรุง / ไม่ได้สังเกต สำหรับแต่ละข้อ หากไม่เห็นในช่วงที่เข้าชม ให้เลือก ไม่ได้สังเกต",
+  "Select…": "เลือก…",
+  "Observed": "พบตามเกณฑ์",
+  "Needs attention": "ต้องปรับปรุง",
+  "Not observed / N/A": "ไม่ได้สังเกต / ไม่เกี่ยวข้อง",
+  "Register / attendance accurate": "การเช็กชื่อและบันทึกการเข้าเรียนถูกต้อง",
+  "Clear instructions / routines": "คำอธิบายและขั้นตอนการทำกิจกรรมชัดเจน",
+  "Resources ready and suitable": "อุปกรณ์พร้อมและเหมาะสม",
+  "TA / staff role being used well": "TA / บุคลากรมีหน้าที่ชัดเจนและช่วยได้อย่างเหมาะสม",
+  "Positive relationships visible": "มีปฏิสัมพันธ์ที่ดีระหว่างผู้สอนกับนักเรียน",
+  "Students engaged and purposeful": "นักเรียนมีส่วนร่วมและเข้าใจสิ่งที่กำลังทำ",
+  "Safe organisation and supervision": "การจัดกิจกรรมและการดูแลมีความปลอดภัย",
+  "Behaviour expectations clear": "นักเรียนเข้าใจพฤติกรรมที่คาดหวัง",
+  "Differentiation / support evident": "มีการปรับกิจกรรมและช่วยเหลือให้เหมาะกับนักเรียน",
+  "Dismissal / parent pick-up clear": "ขั้นตอนเลิกกิจกรรมและการรับนักเรียนชัดเจน",
+  "Overall QA score": "คะแนนคุณภาพโดยรวม",
+  "1 · Significant improvement needed": "1 · ต้องปรับปรุงอย่างมาก",
+  "5 · Excellent provision": "5 · จัดกิจกรรมได้ดีเยี่ยม",
+  "2: improvement needed · 3: meets expectations · 4: strong provision": "2: ต้องปรับปรุง · 3: เป็นไปตามที่คาดหวัง · 4: จัดกิจกรรมได้ดี",
+  "Strengths seen during this visit": "จุดเด่นที่พบในการสังเกตครั้งนี้",
+  "Follow-up level": "ระดับการติดตาม",
+  "Routine": "ตามปกติ",
+  "Follow-up": "ต้องติดตาม",
+  "Urgent": "เร่งด่วน",
+  "For an immediate safeguarding concern, follow the school reporting procedure straight away.": "หากพบข้อกังวลเร่งด่วนด้านความปลอดภัยหรือการคุ้มครองนักเรียน ให้รายงานตามขั้นตอนของโรงเรียนทันที",
+  "Actions taken / next steps": "สิ่งที่ดำเนินการแล้ว / ขั้นตอนต่อไป",
+  "Action owner": "ผู้รับผิดชอบดำเนินการ",
+  "Review / action due date": "วันที่ครบกำหนดทบทวน / ดำเนินการ",
+  "Demo observation · not saved to the shared app": "การสังเกตในโหมดทดลอง · ไม่ได้บันทึกในระบบส่วนกลาง",
+  "Submitted observations go to the CCA administrator.": "ผลการสังเกตที่ส่งจะให้ผู้ดูแล CCA ตรวจสอบ",
+  "Submit observation": "ส่งผลการสังเกต",
+  "Observation complete": "บันทึกการสังเกตเสร็จแล้ว",
+  "Demo observation submitted": "ส่งผลการสังเกตในโหมดทดลองแล้ว",
+  "Thank you for your feedback": "ขอบคุณสำหรับความคิดเห็น",
+  "This observation is available in the demo dashboard for this session.": "ดูผลการสังเกตนี้ได้ในหน้าสรุปโหมดทดลองระหว่างการใช้งานครั้งนี้",
+  "Your observation has been saved and is available to the CCA administrator.": "บันทึกผลการสังเกตแล้ว ผู้ดูแล CCA สามารถตรวจสอบได้",
+  "Return to activities": "กลับไปที่รายการกิจกรรม",
+  "Observations": "รายการสังเกต",
+  "Average QA score": "คะแนนคุณภาพเฉลี่ย",
+  "Open follow-up": "รายการติดตามที่ยังไม่เสร็จ",
+  "Activities reviewed": "กิจกรรมที่ได้รับการสังเกต",
+  "Show": "แสดง",
+  "All observations": "ผลการสังเกตทั้งหมด",
+  "Closed": "เสร็จสิ้น",
+  "Open": "ยังไม่ดำเนินการ",
+  "In progress": "กำลังดำเนินการ",
+  "Actions / next steps": "การดำเนินการ / ขั้นตอนต่อไป",
+  "Action status": "สถานะการดำเนินการ",
+  "Full observation details": "รายละเอียดการสังเกตทั้งหมด",
+  "Room": "ห้อง",
+  "Strengths seen": "จุดเด่นที่พบ",
+  "None recorded": "ยังไม่มีบันทึก",
+  "Drop-in checklist": "รายการตรวจสอบการสังเกต",
+  "Context at time of observation": "ข้อมูลประกอบ ณ เวลาที่สังเกต",
+  "No observations yet": "ยังไม่มีผลการสังเกต",
+  "Submitted staff observations will appear here.": "ผลการสังเกตที่บุคลากรส่งจะแสดงที่นี่",
+  "Outside-provider activities": "กิจกรรมจากผู้จัดภายนอก",
+  "Add each activity once. Staff see these details alongside their feedback form.": "เพิ่มแต่ละกิจกรรมเพียงครั้งเดียว บุคลากรจะเห็นข้อมูลนี้ข้างแบบฟอร์มความคิดเห็น",
+  "Edit details": "แก้ไขข้อมูล",
+  "Edit activity": "แก้ไขกิจกรรม",
+  "Activity name": "ชื่อกิจกรรม",
+  "Year groups": "ระดับชั้น",
+  "Provider": "ผู้จัดกิจกรรม",
+  "Review stage date": "วันที่ทบทวน",
+  "Sessions observed to date": "จำนวนครั้งที่สังเกตถึงปัจจุบัน",
+  "Availability": "สถานะกิจกรรม",
+  "Active — visible to staff": "เปิดใช้งาน — บุคลากรเห็นกิจกรรมได้",
+  "Archived — hide from staff": "เก็บเข้าคลัง — ซ่อนจากบุคลากร",
+  "Save activity": "บันทึกกิจกรรม",
+  "Close": "ปิด",
+  "Activity details saved": "บันทึกข้อมูลกิจกรรมแล้ว",
+  "Demo is up to date": "ข้อมูลโหมดทดลองเป็นปัจจุบัน",
+  "Latest records loaded": "โหลดข้อมูลล่าสุดแล้ว",
+  "Action status updated": "อัปเดตสถานะการดำเนินการแล้ว",
+  "There are no observations to export yet.": "ยังไม่มีผลการสังเกตให้ส่งออก",
+  "Opening the staff portal…": "กำลังเปิดระบบสำหรับบุคลากร…",
+  "Demo data could not be loaded.": "ไม่สามารถโหลดข้อมูลโหมดทดลองได้",
+  "Access code not recognised.": "รหัสเข้าใช้งานไม่ถูกต้อง",
+  "Please sign in to continue.": "กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ",
+  "Administrator access required.": "ต้องใช้สิทธิ์ผู้ดูแลระบบ",
+  "Unable to save or load records. Please try again.": "ไม่สามารถบันทึกหรือโหลดข้อมูลได้ กรุณาลองใหม่",
+  "Staff access has not been configured. Ask the CCA administrator to complete setup.": "ยังไม่ได้ตั้งค่ารหัสเข้าใช้งาน กรุณาติดต่อผู้ดูแล CCA เพื่อตั้งค่าให้เสร็จ",
+  "Complete the observation, checklist, score and required next steps.": "กรุณากรอกการสังเกต รายการตรวจสอบ คะแนน และขั้นตอนต่อไปที่จำเป็นให้ครบ",
+  "Activity is unavailable. Refresh the activity list.": "กิจกรรมนี้ไม่พร้อมใช้งาน กรุณาโหลดรายการกิจกรรมล่าสุด",
+  "Complete the required activity details.": "กรุณากรอกข้อมูลกิจกรรมที่จำเป็นให้ครบ",
+  "Unable to complete request.": "ไม่สามารถดำเนินการได้",
+  "The shared service is unavailable. Use the demo to preview, or check the Netlify setup.": "ไม่สามารถเชื่อมต่อระบบส่วนกลางได้ กรุณาใช้โหมดทดลอง หรือตรวจสอบการตั้งค่า Netlify",
+  "This is the offline demo. Choose Explore the demo; use the deployed app to sign in.": "นี่คือโหมดทดลองออฟไลน์ กรุณาเลือก ทดลองใช้งาน หากต้องการเข้าสู่ระบบ ให้ใช้แอปที่เผยแพร่แล้ว",
+  "Harrow Bangkok · Co-Curricular Activities": "Harrow Bangkok · กิจกรรมเสริมหลักสูตร",
+  "What to look for": "สิ่งที่ควรสังเกต",
+  "Example": "ตัวอย่าง",
+  "How to choose": "วิธีเลือกคำตอบ",
+  "Observed: you saw this working well. Needs attention: you saw a gap or concern. Not observed / N/A: you did not see it during your visit, or it does not apply.": "พบตามเกณฑ์: เห็นว่าทำได้อย่างเหมาะสม ต้องปรับปรุง: เห็นข้อบกพร่องหรือข้อกังวล ไม่ได้สังเกต / ไม่เกี่ยวข้อง: ไม่เห็นในช่วงที่เข้าชม หรือข้อนี้ไม่เกี่ยวข้องกับกิจกรรม",
+  "More information": "ข้อมูลเพิ่มเติม",
+  "The provider checks who is present and keeps the register consistent with the pupils in the session. Any absence or unexpected pupil is checked with the school.": "ผู้จัดกิจกรรมตรวจสอบว่าใครมาเข้าร่วม และบันทึกให้ตรงกับนักเรียนที่อยู่จริง หากมีนักเรียนขาดหรือมีนักเรียนที่ไม่อยู่ในรายชื่อ ให้ตรวจสอบกับโรงเรียน",
+  "The provider checks names against the register at the start and follows up when a listed pupil is missing.": "ผู้จัดกิจกรรมเช็กชื่อจากทะเบียนก่อนเริ่ม และติดตามเมื่อนักเรียนที่มีรายชื่อไม่มา",
+  "Pupils understand what to do, how to start and what happens when they move between tasks. Look for a short explanation or demonstration, with a check that pupils understand.": "นักเรียนเข้าใจว่าต้องทำอะไร เริ่มอย่างไร และเปลี่ยนไปทำงานถัดไปอย่างไร สังเกตว่ามีคำอธิบายสั้น ๆ หรือการสาธิต และตรวจสอบว่านักเรียนเข้าใจ",
+  "The provider demonstrates a coding task, asks pupils to explain the first step and gives a clear signal before changing activities.": "ผู้จัดกิจกรรมสาธิตงานเขียนโปรแกรม ให้นักเรียนบอกขั้นตอนแรก และให้สัญญาณชัดเจนก่อนเปลี่ยนกิจกรรม",
+  "Materials and equipment are ready, safe and appropriate for the pupils’ age and the activity. There should be enough to support the planned task.": "วัสดุและอุปกรณ์พร้อม ปลอดภัย และเหมาะกับวัยและกิจกรรม มีจำนวนเพียงพอสำหรับงานที่วางแผนไว้",
+  "Robots are charged, devices work and pupils can begin without a long wait for equipment.": "หุ่นยนต์ชาร์จแบตเตอรี่แล้ว อุปกรณ์ใช้งานได้ และนักเรียนเริ่มทำงานได้โดยไม่ต้องรออุปกรณ์นาน",
+  "Where a TA or another member of staff is present, they know their role and actively support participation, learning or supervision. Select Not observed / N/A if no support staff are assigned.": "หากมี TA หรือบุคลากรช่วยสอน บุคคลนั้นเข้าใจหน้าที่และช่วยให้นักเรียนมีส่วนร่วม เรียนรู้ หรือได้รับการดูแล หากไม่มีบุคลากรช่วยที่ได้รับมอบหมาย ให้เลือก ไม่ได้สังเกต / ไม่เกี่ยวข้อง",
+  "The provider explains the task while the TA helps a pupil who needs support and checks that the rest of the group can start.": "ผู้จัดกิจกรรมอธิบายงาน ส่วน TA ช่วยนักเรียนที่ต้องการความช่วยเหลือ และตรวจสอบว่าคนอื่นเริ่มทำงานได้",
+  "The provider speaks respectfully, listens to pupils and gives encouragement. Pupils feel able to ask questions or make mistakes without being embarrassed.": "ผู้จัดกิจกรรมพูดอย่างให้เกียรติ รับฟัง และให้กำลังใจ นักเรียนกล้าถามหรือทำผิดพลาดโดยไม่ถูกทำให้อับอาย",
+  "A pupil makes an error; the provider responds calmly, explains what to try next and recognises the pupil’s effort.": "เมื่อนักเรียนทำผิด ผู้จัดกิจกรรมตอบอย่างใจเย็น อธิบายสิ่งที่ควรลองต่อ และชมความพยายาม",
+  "Most pupils are actively involved in the intended task and understand what they are trying to achieve. Engagement does not have to mean a silent room.": "นักเรียนส่วนใหญ่มีส่วนร่วมในงานที่กำหนด และเข้าใจเป้าหมายของงาน การมีส่วนร่วมไม่ได้หมายความว่าห้องต้องเงียบ",
+  "Pupils test their robot programmes, explain their choices and keep trying when the robot does not behave as expected.": "นักเรียนทดสอบโปรแกรมหุ่นยนต์ อธิบายสิ่งที่เลือกทำ และพยายามแก้ไขเมื่อหุ่นยนต์ไม่ทำงานตามที่คาด",
+  "The space, equipment and group organisation are safe. The provider can supervise all pupils, manages risks and follows the school’s safety arrangements.": "สถานที่ อุปกรณ์ และการจัดกลุ่มปลอดภัย ผู้จัดกิจกรรมดูแลนักเรียนได้ทั่วถึง จัดการความเสี่ยง และปฏิบัติตามแนวทางความปลอดภัยของโรงเรียน",
+  "Walkways are clear, tools are used safely and pupils remain within the area the provider can supervise.": "ทางเดินไม่มีสิ่งกีดขวาง ใช้เครื่องมืออย่างปลอดภัย และนักเรียนอยู่ในบริเวณที่ผู้จัดกิจกรรมดูแลได้",
+  "Pupils know the rules for behaviour, including listening, sharing equipment and treating others respectfully. The provider gives consistent, calm reminders.": "นักเรียนเข้าใจกติกาด้านพฤติกรรม เช่น การฟัง การแบ่งปันอุปกรณ์ และการให้เกียรติผู้อื่น ผู้จัดกิจกรรมเตือนอย่างสม่ำเสมอและใจเย็น",
+  "Before equipment is shared, the provider explains turn-taking and calmly reminds pupils of the rule when needed.": "ก่อนแบ่งอุปกรณ์ ผู้จัดกิจกรรมอธิบายการผลัดกันใช้ และเตือนอย่างใจเย็นเมื่อนักเรียนไม่ทำตาม",
+  "The provider adjusts the task, explanation or support for different ages, abilities or needs. Pupils who need help can take part, and pupils ready for more challenge can progress.": "ผู้จัดกิจกรรมปรับงาน คำอธิบาย หรือความช่วยเหลือให้เหมาะกับวัย ความสามารถ และความต้องการ นักเรียนที่ต้องการความช่วยเหลือเข้าร่วมได้ และนักเรียนที่พร้อมได้รับงานท้าทายเพิ่ม",
+  "A pupil uses a step-by-step prompt, while a more confident pupil is asked to add an extra function to the programme.": "นักเรียนคนหนึ่งใช้คำแนะนำทีละขั้น ส่วนคนที่มั่นใจมากกว่าได้รับโจทย์เพิ่มฟังก์ชันในโปรแกรม",
+  "At the end, pupils are accounted for and handed over using the school’s agreed arrangements. Staff know who may collect each pupil or where the pupil should go next.": "เมื่อเลิกกิจกรรม มีการตรวจสอบนักเรียนครบและส่งต่อ ตามขั้นตอนที่โรงเรียนกำหนด บุคลากรทราบว่าใครมีสิทธิ์รับนักเรียน หรือจะไปที่ใดต่อ",
+  "The provider checks the collection arrangement before releasing a pupil. If you leave before dismissal, select Not observed / N/A rather than assuming it is satisfactory.": "ผู้จัดกิจกรรมตรวจสอบการรับนักเรียนก่อนปล่อยกลับ หากออกก่อนเลิกกิจกรรม ให้เลือก ไม่ได้สังเกต / ไม่เกี่ยวข้อง แทนการคาดเดาว่าทำได้ดี"
+};
+const originalText = new WeakMap();
+let currentLanguage='en';
+try { currentLanguage=localStorage.getItem('cca-qa-language')==='th'?'th':'en'; } catch {}
+export function translated(text,lang=currentLanguage){
+ const trimmed=text.trim(),suffix=trimmed.endsWith(' *')?' *':'';
+ const key=suffix?trimmed.slice(0,-2):trimmed;
+ if(lang==='en')return text;
+ let result=TH[key];
+ if(!result&&/^\d+ activit(?:y|ies) available$/.test(key))result='มีกิจกรรม '+key.split(' ')[0]+' รายการ';
+ if(!result&&/^Previous QA: [1-5]\/5$/.test(key))result=key.replace('Previous QA:','คะแนนคุณภาพเดิม:');
+ if(!result&&/^[1-5] out of 5$/.test(key))result=key[0]+' จาก 5 คะแนน';
+ return result ? text.replace(trimmed,result+suffix):text;
+}
+export function toggleLanguage(){currentLanguage=currentLanguage==='en'?'th':'en';try{localStorage.setItem('cca-qa-language',currentLanguage)}catch{}translatePage();}
+const observer = new MutationObserver(()=>translatePage());
+export function translatePage(){
+ observer.disconnect();
+ const selections=[...document.querySelectorAll('select')].map(element=>({element,value:element.value}));
+ document.documentElement.lang=currentLanguage==='th'?'th':'en-GB';
+ const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+ let node;
+ while((node=walker.nextNode())){
+  if(node.parentElement.closest('script,style,textarea,[data-user-content]'))continue;
+  let record=originalText.get(node);
+  if(!record||node.textContent!==record.rendered)record={source:node.textContent};
+  record.rendered=translated(record.source);if(node.textContent!==record.rendered)node.textContent=record.rendered;
+  originalText.set(node,record);
+ }
+ for(const element of document.querySelectorAll('[placeholder],[aria-label]')){
+  for(const attr of ['placeholder','aria-label']){
+   if(!element.hasAttribute(attr))continue;
+   const key='data-original-'+attr;
+   if(!element.hasAttribute(key))element.setAttribute(key,element.getAttribute(attr));
+   const value=translated(element.getAttribute(key));if(value!==element.getAttribute(attr))element.setAttribute(attr,value);
+  }
+ }
+ for(const button of document.querySelectorAll('[data-action="language"]')){
+  button.setAttribute('aria-label',currentLanguage==='th'?'Switch to English':'เปลี่ยนเป็นภาษาไทย');
+  button.setAttribute('aria-pressed',String(currentLanguage==='th'));
+ }
+ for(const {element,value} of selections)if(element.value!==value)element.value=value;
+ observer.observe(document.body,{childList:true,subtree:true,characterData:true});
+}
+translatePage();

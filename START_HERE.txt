@@ -1,0 +1,12 @@
+HARROW BANGKOK — CCA QUALITY ASSURANCE
+
+1. Open CCA_QA_Demo.html in Chrome or Edge.
+2. Choose Explore the demo.
+3. Try Record observation, then Observations & actions.
+4. Open README.md for the GitHub Desktop / Netlify setup guide.
+
+The demo is temporary. To share records between staff, deploy the full project
+through a Git-connected Netlify project and configure the three access variables.
+
+Only the one activity visible in your photograph has been preloaded.
+Add your other provider activities under Manage activities.
