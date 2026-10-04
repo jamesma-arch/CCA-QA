@@ -12,7 +12,7 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const date=v=>v?new Date(v+'T12:00:00').toLocaleDateString('en-GB'):'Not set';
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 const options=(items,current)=>items.map(x=>`<option value="${esc(x)}" ${x===current?'selected':''}>${esc(x)}</option>`).join('');
-const brand=()=>`<div class="brand"><div class="monogram" aria-hidden="true">H</div><div><strong>HARROW BANGKOK</strong><small>CCA · Quality Assurance</small></div></div>`;
+const brand=()=>`<div class="brand"><img class="school-logo" src="assets/harrow-bangkok-logo.svg" alt="Harrow International School Bangkok" width="72" height="100"><div class="brand-title"><strong>CCA</strong><small>Quality Assurance</small></div></div>`;
 function toast(t){const el=document.querySelector('#toast');el.textContent=t;el.style.display='block';clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.style.display='none',4500)}
 async function api(action,body){const r=await fetch('/.netlify/functions/api?action='+action,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined});let result;try{result=await r.json()}catch{throw Error('The shared service is unavailable. Please try again or contact the CCA administrator.')}if(!r.ok){if(r.status===401&&action!=='login'){state.role=null;render()}throw Error(result.error||'Unable to complete request.')}return result}
 function err(form,msg){let e=form.querySelector('.error');if(!e){e=document.createElement('div');e.className='error';e.setAttribute('role','alert');form.append(e)}e.textContent=msg;e.scrollIntoView({block:'nearest'})}
