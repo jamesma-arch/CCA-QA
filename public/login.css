@@ -1,0 +1,84 @@
+
+        .qa-login{ min-height: 100vh; display: grid; place-items: center; padding: 18px; background: radial-gradient(circle at 7% 0%, #d7e2d6, transparent 30%), radial-gradient(circle at 98% 92%, #e9e4dc, transparent 30%), #f5f6f8; }
+        .qa-login .login-shell { display: grid; grid-template-columns: 1.17fr 1fr; width: min(1100px, 100%); min-height: 650px; border-radius: 24px; overflow: hidden; box-shadow: 0 22px 58px rgba(25, 35, 59, .2); }
+        .qa-login .login-brand { position: relative; min-width: 0; overflow: hidden; isolation: isolate; color: #f8f7f5; background: radial-gradient(circle at 65% 16%, #213b52, #101e36 55%, #0c1930); padding: 29px 38px; }
+        .qa-login .brand-artwork { position: absolute; z-index: -1; inset: 0; background: url(assets/harrow-campus-sunlit.jpg) 35% center / cover no-repeat; }
+        .qa-login .brand-artwork:after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,25,45,.74) 0%, rgba(10,25,45,.78) 44%, rgba(10,25,45,.54) 61%, rgba(10,25,45,.08) 88%); }
+        .qa-login .brand-top { position: relative; z-index: 1; }
+        .qa-login .brand-school { display: flex; gap: 15px; align-items: center; }
+        .qa-login .login-crest { display: inline-block; position: relative; overflow: hidden; flex: none; border-radius: 50%; background: #112742; }
+        .qa-login .login-crest img { position: absolute; display: block; max-width: none; width: 183%; height: auto; left: -41.5%; top: -25%; }
+        .qa-login .brand-crest { width: 62px; height: 78px; border-radius: 0; background: transparent; }
+        .qa-login .brand-crest img { top: -11%; }
+        .qa-login .brand-school-name, .qa-login .panel-school-name { display: flex; flex-direction: column; font-family: Georgia, 'Times New Roman', serif; line-height: .95; letter-spacing: .055em; }
+        .qa-login .brand-school-name strong { font-size: 26px; font-weight: 500; }
+        .qa-login .brand-school-name span { font-size: 11px; letter-spacing: .13em; line-height: 1; }
+        .qa-login .brand-school-name small { width: fit-content; margin-top: 5px; padding-top: 5px; border-top: 1px solid #a9986d; font-size: 10px; letter-spacing: .19em; }
+        .qa-login .brand-rule { width: 36px; height: 1px; margin: 15px 0 18px; background: #ad9256; }
+        .qa-login .brand-eyebrow { color: #bfa871; font: 10px Georgia, serif; letter-spacing: .36em; white-space: nowrap; }
+        .qa-login .brand-top h1 { max-width: 450px; margin: 11px 0 0; color: #fff; font: normal clamp(30px, 3.65vw, 42px)/1.08 Georgia, 'Times New Roman', serif; letter-spacing: -.025em; }
+        .qa-login .brand-rule-short { margin: 20px 0 14px; }
+        .qa-login .brand-tagline { font: 9px Georgia, serif; letter-spacing: .22em; white-space: nowrap; }
+        .qa-login .brand-tagline span { color: #bfa871; padding: 0 4px; }
+        .qa-login .brand-values { position: absolute; z-index: 1; right: 22px; top: 48%; display: flex; flex-direction: column; gap: 13px; padding: 12px 0 0 13px; border-left: 1px solid rgba(191,168,113,.45); color: #f6efd9; font: 8px Georgia, serif; letter-spacing: .23em; }
+        .qa-login .brand-values:before { content: ''; position: absolute; top: 0; left: 13px; width: 18px; height: 1px; background: #cba96b; }
+        .qa-login .brand-bottom { position: absolute; z-index: 1; left: 30px; bottom: 22px; margin: 0; text-shadow: 0 1px 8px #07142b; }
+        .qa-login .brand-bottom span { display: block; color: #dcc99a; font: 8px Georgia, serif; letter-spacing: .3em; }
+        .qa-login .brand-bottom em { color: #e7c38d; font: italic 18px Georgia, serif; }
+        .qa-login .login-panel { position: relative; display: flex; flex-direction: column; justify-content: center; background: linear-gradient(152deg, #fff 56%, #faf9f7); padding: 28px 26px 24px; color: #15253d; }
+        .qa-login .login-panel:after { content: ''; position: absolute; pointer-events: none; inset: 0; background: linear-gradient(145deg, rgba(208,185,137,.035), transparent 32%); }
+        .qa-login .panel-corner { position: absolute; top: 28px; right: 25px; color: #aa9166; font: 8px/1.85 Georgia, serif; letter-spacing: .26em; }
+        .qa-login .panel-heading { display: flex; align-items: center; flex-direction: column; margin-bottom: 20px; }
+        .qa-login .panel-crest { width: 94px; height: 94px; border: 2px solid #ab9056; box-shadow: 0 7px 17px rgba(16, 29, 51, .18); }
+        .qa-login .panel-school-name { align-items: center; margin-top: 7px; text-align: center; }
+        .qa-login .panel-school-name strong { font-size: 20px; font-weight: 500; }
+        .qa-login .panel-school-name span { font-size: 10px; letter-spacing: .045em; }
+        .qa-login .panel-school-name small { margin-top: 4px; padding-top: 4px; width: 60px; border-top: 1px solid #b59d70; font-size: 9px; letter-spacing: .13em; }
+        .qa-login .area-caption { margin: 0 0 15px; text-align: center; color: #4d5b70; font: 9px Georgia, serif; letter-spacing: .27em; }
+        .qa-login .area-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; }
+        .qa-login .area-choice { min-width: 0; min-height: 59px; display: flex; align-items: center; gap: 9px; padding: 9px 13px; border: 1px solid #e0e2e7; border-radius: 11px; background: #fff; color: #182944; box-shadow: 0 5px 12px rgba(14,31,56,.075); cursor: pointer; font: 11px Georgia, serif; text-align: left; transition: border-color .15s, box-shadow .15s, transform .15s; }
+        .qa-login .area-choice:hover { transform: translateY(-2px); border-color: #b79d67; }
+        .qa-login .area-choice.selected { border-color: #d4b77d; box-shadow: 0 5px 14px rgba(139,106,52,.14); }
+        .qa-login .area-choice:focus-visible, .qa-login .login-submit:focus-visible, .qa-login .password-visibility:focus-visible { outline: 3px solid #a68f59; outline-offset: 2px; }
+        .qa-login .area-choice svg { width: 27px; height: 27px; flex: none; color: #a48a53; }
+        .qa-login .area-choice span:nth-child(2) { flex: 1; }
+        .qa-login .area-arrow { font: 18px Arial, sans-serif; color: #a49274; }
+        .qa-login .academy-availability { min-height: 22px; margin: 7px 0 0; text-align: center; color: #5c6471; font-size: 10px; line-height: 1.2; }
+        .qa-login .form-divider { height: 1px; margin: 4px 10px 16px; background: linear-gradient(to right, #e7e8eb 46%, #bc9f69 46%, #bc9f69 54%, #e7e8eb 54%); }
+        .qa-login .login-form { padding: 0 7px; }
+        .qa-login .login-form label { display: block; margin: 0 0 5px 3px; font: bold 11px Georgia, serif; letter-spacing: .09em; }
+        .qa-login .login-field { display: flex; align-items: center; min-height: 38px; margin-bottom: 13px; border: 1px solid #dfe1e6; border-radius: 10px; background: #fff; box-shadow: 0 3px 10px rgba(14,31,56,.055); }
+        .qa-login .login-field:focus-within { border-color: #af955e; box-shadow: 0 0 0 3px rgba(183,157,103,.16); }
+        .qa-login .login-field > svg { width: 17px; height: 17px; margin-left: 11px; color: #66768b; flex: none; }
+        .qa-login .login-field input { min-width: 0; width: 100%; padding: 10px 9px; border: 0; outline: 0; background: transparent; color: #172846; font: 12px Arial, sans-serif; }
+        .qa-login .login-field input::placeholder { color: #8792a1; }
+        .qa-login .password-visibility { display: grid; place-items: center; flex: none; margin-right: 5px; width: 31px; height: 29px; border: 0; border-radius: 6px; background: transparent; color: #65758a; cursor: pointer; }
+        .qa-login .password-visibility svg { width: 16px; height: 16px; }
+        .qa-login .login-error { margin: 0 0 8px; color: #b3211e; font-size: 11px; }
+        .qa-login .login-submit { position: relative; width: 100%; min-height: 45px; margin-top: 1px; border: 0; border-radius: 999px; background: linear-gradient(115deg, #bda56f, #92763b); color: white; cursor: pointer; box-shadow: 0 7px 16px rgba(139,106,52,.22); font: bold 15px Georgia, serif; }
+        .qa-login .login-submit:hover { filter: brightness(1.05); }
+        .qa-login .login-submit span { position: absolute; right: 17px; font: 20px Arial, sans-serif; top: 11px; }
+        .qa-login .login-footnote { margin: 19px 0 0; color: #647087; text-align: center; font: 9px/1.55 Arial, sans-serif; }
+        @media (max-width: 800px) { .qa-login .login-shell { max-width: 570px; grid-template-columns: 1fr; } .qa-login .login-brand { min-height: 430px; } .qa-login .login-panel { padding: 35px 30px; } .qa-login .brand-top h1 { font-size: clamp(32px, 7vw, 42px); } }
+        @media (max-width: 480px) { .qa-login { padding: 0; display: block; } .qa-login .login-shell { border-radius: 0; } .qa-login .login-brand { min-height: 370px; padding: 21px 23px; } .qa-login .brand-top h1 { font-size: 31px; } .qa-login .brand-tagline { font-size: 7px; } .qa-login .brand-values { display: none; } .qa-login .login-panel { padding: 30px 18px; } .qa-login .area-choice { padding: 9px 8px; gap: 5px; font-size: 10px; } .qa-login .area-choice svg { width: 23px; height: 23px; } .qa-login .footnote-break { display: none; } }
+      
+.qa-login { position:relative; padding:72px 18px 30px; }
+.qa-login .qa-login-language {position:absolute;top:18px;right:24px;z-index:3;}
+.qa-login .qa-brand-logo {display:block;width:120px;height:100px;object-fit:contain;object-position:left center;}
+.qa-login .qa-panel-logo {display:block;width:108px;height:148px;object-fit:contain;}
+.qa-login .brand-eyebrow {margin-bottom:0;}
+.qa-login .brand-tagline {margin:0;}
+.qa-login .login-shell {min-height:650px;}
+.qa-login .login-panel {padding:34px 30px;}
+.qa-login .panel-heading {margin-bottom:28px;}
+.qa-login .area-choice {font-weight:normal;justify-content:flex-start;}
+.qa-login .form-divider {margin:28px 10px 22px;}
+.qa-login .qa-portal-description {font-size:12px;color:#647087;text-align:center;min-height:36px;margin:0 7px 18px;}
+.qa-login .qa-portal[hidden] {display:none;}
+.qa-login .login-form label {font-size:12px;}
+.qa-login .login-field {min-height:44px;margin-bottom:18px;}
+.qa-login .login-field input {font-size:14px;}
+.qa-login .login-submit {font-size:14px;}
+.qa-login .login-footnote {margin-top:24px;font-size:10px;}
+.qa-login .error {margin-top:16px;}
+@media (max-width:480px) { .qa-login {padding:64px 0 0;} .qa-login .qa-login-language {top:14px;right:14px;} .qa-login .login-panel {padding:30px 20px;} .qa-login .area-choice {font-size:12px;} }
