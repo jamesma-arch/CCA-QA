@@ -27,7 +27,7 @@ try{
  const all=async prefix=>{const result=await store.list({prefix});return (await Promise.all(result.blobs.map(x=>store.get(x.key,{type:'json'})))).filter(Boolean)};
  const activities=async()=>{const existing=await all('activity/');return [...seed.filter(a=>!existing.some(e=>e.id===a.id)),...existing]};
  const staffDirectory=async()=>{const current=await store.get('staff-directory/current',{type:'json'});return Array.isArray(current)?current:await all('staff/')};
- if(action==='data'&&method==='GET'){const reviews=await all('review/');return res({role:auth.role,activities:await activities(),reviews:auth.role==='admin'?reviews:[],followUps:auth.role==='admin'?await all('followup/'):[],staffDirectory:auth.role==='admin'?await staffDirectory():[],reviewProgress:reviews.filter(r=>r.reviewType).map(({activityId,academicYear,seasonNumber,reviewType})=>({activityId,academicYear,seasonNumber,reviewType}))})}
+ if(action==='data'&&method==='GET'){const reviews=await all('review/');return res({role:auth.role,activities:await activities(),reviews:auth.role==='admin'?reviews:[],followUps:auth.role==='admin'?await all('followup/'):[],staffDirectory:auth.role==='admin'?await staffDirectory():[],reminders:auth.role==='admin'?await all('reminder-status/'):[],reviewProgress:reviews.filter(r=>r.reviewType).map(({activityId,academicYear,seasonNumber,reviewType})=>({activityId,academicYear,seasonNumber,reviewType}))})}
  if(action==='review'&&method==='POST'){
   const activity=(await activities()).find(a=>a.id===b.activityId&&a.active);if(!activity)return res({error:'Activity is unavailable. Refresh the activity list.'},400);
   if(!str(b.reviewer,100)||!str(b.review,5000)||!/^\d{4}-\d{2}-\d{2}$/.test(b.date??'')||!Number.isInteger(b.score)||b.score<1||b.score>5||!Array.isArray(b.checklist)||b.checklist.length!==checks.length||b.checklist.some(v=>!['yes','no','na'].includes(v))||!['Routine','Follow-up','Urgent'].includes(b.priority)||!str(b.nextSteps??'',5000)&&b.priority!=='Routine')return res({error:'Complete the observation, checklist, score and required next steps.'},400);
@@ -40,6 +40,12 @@ try{
  }
  if(auth.role!=='admin')return res({error:'Administrator access required.'},403);
  if(action==='reminderConfig'&&method==='GET')return res({staffAccessCode:env.STAFF_ACCESS_CODE});
+ if(action==='reminderStatus'&&method==='POST'){
+  if(!/^[a-zA-Z0-9-]{1,80}$/.test(b.activityId??'')||typeof b.sent!=='boolean')return res({error:'Invalid reminder status.'},400);
+  const activity=(await activities()).find(a=>a.id===b.activityId);if(!activity)return res({error:'Activity not found.'},404);
+  const record={activityId:activity.id,sent:b.sent,sentAt:b.sent?new Date().toISOString():'',updatedAt:new Date().toISOString()};
+  await store.setJSON('reminder-status/'+activity.id,record);return res({reminder:record});
+ }
  if(action==='followup'&&method==='POST'){
   if(!/^[a-zA-Z0-9-]{1,80}$/.test(b.reviewId??''))return res({error:'Invalid review identifier.'},400);
   const original=await store.get('review/'+b.reviewId,{type:'json'});if(!original)return res({error:'Review not found.'},404);
