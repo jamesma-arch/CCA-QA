@@ -13,7 +13,7 @@ try{
  if(!['GET','POST'].includes(method))return res({error:'Method not allowed.'},405);
  if(method==='POST'&&req.headers.get('origin')!==url.origin)return res({error:'Request origin not permitted.'},403);
  if(!env.STAFF_ACCESS_CODE||!env.ADMIN_ACCESS_CODE||!env.SESSION_SECRET||env.SESSION_SECRET.length<32||env.STAFF_ACCESS_CODE===env.ADMIN_ACCESS_CODE)return res({error:'Staff access has not been configured. Ask the CCA administrator to complete setup.'},503);
- let b={};if(method==='POST'){if(Number(req.headers.get('content-length'))>60000)return res({error:'Request too large.'},413);const raw=await req.text();if(raw.length>60000)return res({error:'Request too large.'},413);try{b=JSON.parse(raw)}catch{return res({error:'Invalid request.'},400)}}
+ let b={};if(method==='POST'){const maxBody=action==='staffDirectory'?500000:60000;if(Number(req.headers.get('content-length'))>maxBody)return res({error:'Request too large.'},413);const raw=await req.text();if(raw.length>maxBody)return res({error:'Request too large.'},413);try{b=JSON.parse(raw)}catch{return res({error:'Invalid request.'},400)}}
  const cookie=req.headers.get('cookie')?.split('; ').find(x=>x.startsWith('cca_session='))?.slice(12);let auth;
  if(cookie){const [payload,sig]=cookie.split('.');if(sig&&equal(sign(payload,env.SESSION_SECRET),sig)){try{auth=JSON.parse(Buffer.from(payload,'base64url'));if(auth.exp<Date.now()||!['staff','admin'].includes(auth.role)||auth.rev!==sign(auth.role==='admin'?env.ADMIN_ACCESS_CODE:env.STAFF_ACCESS_CODE,env.SESSION_SECRET))auth=null}catch{auth=null}}}
  if(action==='login'&&method==='POST'){
