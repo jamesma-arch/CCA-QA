@@ -26,7 +26,8 @@ try{
  if(!auth)return res({error:'Please sign in to continue.'},401);
  const all=async prefix=>{const result=await store.list({prefix});return (await Promise.all(result.blobs.map(x=>store.get(x.key,{type:'json'})))).filter(Boolean)};
  const activities=async()=>{const existing=await all('activity/');return [...seed.filter(a=>!existing.some(e=>e.id===a.id)),...existing]};
- if(action==='data'&&method==='GET'){const reviews=await all('review/');return res({role:auth.role,activities:await activities(),reviews:auth.role==='admin'?reviews:[],followUps:auth.role==='admin'?await all('followup/'):[],staffDirectory:auth.role==='admin'?await all('staff/'):[],reviewProgress:reviews.filter(r=>r.reviewType).map(({activityId,academicYear,seasonNumber,reviewType})=>({activityId,academicYear,seasonNumber,reviewType}))})}
+ const staffDirectory=async()=>{const current=await store.get('staff-directory/current',{type:'json'});return Array.isArray(current)?current:await all('staff/')};
+ if(action==='data'&&method==='GET'){const reviews=await all('review/');return res({role:auth.role,activities:await activities(),reviews:auth.role==='admin'?reviews:[],followUps:auth.role==='admin'?await all('followup/'):[],staffDirectory:auth.role==='admin'?await staffDirectory():[],reviewProgress:reviews.filter(r=>r.reviewType).map(({activityId,academicYear,seasonNumber,reviewType})=>({activityId,academicYear,seasonNumber,reviewType}))})}
  if(action==='review'&&method==='POST'){
   const activity=(await activities()).find(a=>a.id===b.activityId&&a.active);if(!activity)return res({error:'Activity is unavailable. Refresh the activity list.'},400);
   if(!str(b.reviewer,100)||!str(b.review,5000)||!/^\d{4}-\d{2}-\d{2}$/.test(b.date??'')||!Number.isInteger(b.score)||b.score<1||b.score>5||!Array.isArray(b.checklist)||b.checklist.length!==checks.length||b.checklist.some(v=>!['yes','no','na'].includes(v))||!['Routine','Follow-up','Urgent'].includes(b.priority)||!str(b.nextSteps??'',5000)&&b.priority!=='Routine')return res({error:'Complete the observation, checklist, score and required next steps.'},400);
@@ -51,10 +52,15 @@ try{
   if(!Array.isArray(b.staff)||!b.staff.length||b.staff.length>100)return res({error:'Import between 1 and 100 staff records per request.'},400);
   let incoming;try{incoming=b.staff.map(validateStaff)}catch(e){return res({error:e.message},400)}
   if(new Set(incoming.map(s=>s.email)).size!==incoming.length)return res({error:'Duplicate staff emails in import batch.'},400);
-  const existing=await all('staff/');let saved=0,added=0,updated=0;
   const usableId=v=>{const x=String(v??'').trim().toLowerCase();return x&&!['-','n/a','na','none','unknown','tbc'].includes(x)};
-  try{for(const item of incoming){const previous=existing.find(s=>s.email===item.email||(usableId(item.employeeId)&&s.employeeId===item.employeeId)||(usableId(item.code)&&s.code===item.code));const s={...previous,...item,id:previous?.id||randomUUID()};await store.setJSON('staff/'+s.id,s);if(previous)Object.assign(previous,s);else existing.push(s);saved++;previous?updated++:added++}}catch{return res({error:'Staff directory import interrupted. Refresh and retry.',saved,added,updated},503)}
-  return res({saved,added,updated});
+  const existing=b.replace===true?[]:await staffDirectory();let saved=0,added=0,updated=0;
+  for(const item of incoming){
+   const index=existing.findIndex(s=>s.email===item.email||(usableId(item.employeeId)&&s.employeeId===item.employeeId)||(usableId(item.code)&&s.code===item.code));
+   if(index>=0){existing[index]={...existing[index],...item};updated++}else{existing.push({...item,id:randomUUID()});added++}
+   saved++;
+  }
+  try{await store.setJSON('staff-directory/current',existing)}catch{return res({error:'Staff directory import interrupted. Refresh and retry.',saved:0,added:0,updated:0},503)}
+  return res({saved,added,updated,total:existing.length});
  }
  if(action==='import'&&method==='POST'){
   if(!Array.isArray(b.activities)||!b.activities.length||b.activities.length>50)return res({error:'Import between 1 and 50 activities per request.'},400);
