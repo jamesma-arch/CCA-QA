@@ -52,7 +52,8 @@ try{
   let incoming;try{incoming=b.staff.map(validateStaff)}catch(e){return res({error:e.message},400)}
   if(new Set(incoming.map(s=>s.email)).size!==incoming.length)return res({error:'Duplicate staff emails in import batch.'},400);
   const existing=await all('staff/');let saved=0,added=0,updated=0;
-  try{for(const item of incoming){const previous=existing.find(s=>s.email===item.email||item.employeeId&&s.employeeId===item.employeeId||item.code&&s.code===item.code);const s={...previous,...item,id:previous?.id||randomUUID()};await store.setJSON('staff/'+s.id,s);if(previous)Object.assign(previous,s);else existing.push(s);saved++;previous?updated++:added++}}catch{return res({error:'Staff directory import interrupted. Refresh and retry.',saved,added,updated},503)}
+  const usableId=v=>{const x=String(v??'').trim().toLowerCase();return x&&!['-','n/a','na','none','unknown','tbc'].includes(x)};
+  try{for(const item of incoming){const previous=existing.find(s=>s.email===item.email||(usableId(item.employeeId)&&s.employeeId===item.employeeId)||(usableId(item.code)&&s.code===item.code));const s={...previous,...item,id:previous?.id||randomUUID()};await store.setJSON('staff/'+s.id,s);if(previous)Object.assign(previous,s);else existing.push(s);saved++;previous?updated++:added++}}catch{return res({error:'Staff directory import interrupted. Refresh and retry.',saved,added,updated},503)}
   return res({saved,added,updated});
  }
  if(action==='import'&&method==='POST'){
