@@ -5,6 +5,7 @@ const res=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,
 const equal=(a,b)=>{const x=Buffer.from(String(a)),y=Buffer.from(String(b));return x.length===y.length&&timingSafeEqual(x,y)};
 const sign=(value,secret)=>createHmac('sha256',secret).update(value).digest('base64url');
 const str=(v,max=3000)=>typeof v==='string'&&v.length<=max?v.trim():null;
+function validateStaff(b){const s={};for(const k of ['code','title','forename','middle','surname','preferredName','email','teaching','status','roleType','division','employeeId']){s[k]=str(b[k]??'',300);if(s[k]===null)throw Error('Staff fields must be text, at most 300 characters.');}if(!s.surname||(!s.forename&&!s.preferredName)||!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(s.email))throw Error('Each staff record needs a valid name and school email.');s.email=s.email.toLowerCase();return s;}
 function validateActivity(b){const a={};for(const k of ['title','years','school','day','lead','leadEmail','room','season','reviewStage','sessionsObserved','provider','contact','strengths','priorities','context','time','muster','pickup','backup','capacity','students','support']){a[k]=str(b[k]??'');if(a[k]===null)throw Error('Activity fields must be text, at most 3,000 characters.');}if(!a.title||!a.provider||!a.years||!a.season||!['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].includes(a.day)||!['Lower School','Upper School'].includes(a.school))throw Error('Complete the required activity details.');if(a.leadEmail&&!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(a.leadEmail))throw Error('Enter a valid school lead email address.');a.active=b.active!==false;return a;}
 export function makeHandler({store,env,seed=[]}){return async function(req){
 try{
@@ -25,7 +26,7 @@ try{
  if(!auth)return res({error:'Please sign in to continue.'},401);
  const all=async prefix=>{const result=await store.list({prefix});return (await Promise.all(result.blobs.map(x=>store.get(x.key,{type:'json'})))).filter(Boolean)};
  const activities=async()=>{const existing=await all('activity/');return [...seed.filter(a=>!existing.some(e=>e.id===a.id)),...existing]};
- if(action==='data'&&method==='GET'){const reviews=await all('review/');return res({role:auth.role,activities:await activities(),reviews:auth.role==='admin'?reviews:[],followUps:auth.role==='admin'?await all('followup/'):[],reviewProgress:reviews.filter(r=>r.reviewType).map(({activityId,academicYear,seasonNumber,reviewType})=>({activityId,academicYear,seasonNumber,reviewType}))})}
+ if(action==='data'&&method==='GET'){const reviews=await all('review/');return res({role:auth.role,activities:await activities(),reviews:auth.role==='admin'?reviews:[],followUps:auth.role==='admin'?await all('followup/'):[],staffDirectory:auth.role==='admin'?await all('staff/'):[],reviewProgress:reviews.filter(r=>r.reviewType).map(({activityId,academicYear,seasonNumber,reviewType})=>({activityId,academicYear,seasonNumber,reviewType}))})}
  if(action==='review'&&method==='POST'){
   const activity=(await activities()).find(a=>a.id===b.activityId&&a.active);if(!activity)return res({error:'Activity is unavailable. Refresh the activity list.'},400);
   if(!str(b.reviewer,100)||!str(b.review,5000)||!/^\d{4}-\d{2}-\d{2}$/.test(b.date??'')||!Number.isInteger(b.score)||b.score<1||b.score>5||!Array.isArray(b.checklist)||b.checklist.length!==checks.length||b.checklist.some(v=>!['yes','no','na'].includes(v))||!['Routine','Follow-up','Urgent'].includes(b.priority)||!str(b.nextSteps??'',5000)&&b.priority!=='Routine')return res({error:'Complete the observation, checklist, score and required next steps.'},400);
@@ -45,6 +46,14 @@ try{
   if([nextSteps,owner,due].some(v=>v===null)||b.status!=='Closed'&&!nextSteps||due&&!/^\d{4}-\d{2}-\d{2}$/.test(due))return res({error:'Add next steps for an ongoing follow-up and a valid due date.'},400);
   const followUp={id:randomUUID(),reviewId:original.id,activityId:original.activityId,reviewer:str(b.reviewer,100),date:b.date,score:b.score,review:str(b.review,5000),nextSteps,owner,due,status:b.status,createdAt:new Date().toISOString()};
   await store.setJSON('followup/'+followUp.id,followUp);original.status=b.status;original.owner=owner||original.owner;original.due=due;await store.setJSON('review/'+original.id,original);return res({followUp,review:original},201);
+ }
+ if(action==='staffDirectory'&&method==='POST'){
+  if(!Array.isArray(b.staff)||!b.staff.length||b.staff.length>100)return res({error:'Import between 1 and 100 staff records per request.'},400);
+  let incoming;try{incoming=b.staff.map(validateStaff)}catch(e){return res({error:e.message},400)}
+  if(new Set(incoming.map(s=>s.email)).size!==incoming.length)return res({error:'Duplicate staff emails in import batch.'},400);
+  const existing=await all('staff/');let saved=0,added=0,updated=0;
+  try{for(const item of incoming){const previous=existing.find(s=>s.email===item.email||item.employeeId&&s.employeeId===item.employeeId||item.code&&s.code===item.code);const s={...previous,...item,id:previous?.id||randomUUID()};await store.setJSON('staff/'+s.id,s);if(previous)Object.assign(previous,s);else existing.push(s);saved++;previous?updated++:added++}}catch{return res({error:'Staff directory import interrupted. Refresh and retry.',saved,added,updated},503)}
+  return res({saved,added,updated});
  }
  if(action==='import'&&method==='POST'){
   if(!Array.isArray(b.activities)||!b.activities.length||b.activities.length>50)return res({error:'Import between 1 and 50 activities per request.'},400);
