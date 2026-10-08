@@ -39,6 +39,7 @@ try{
   const review={id:randomUUID(),activityId:activity.id,activitySnapshot:activity,academicYear:b.academicYear,seasonNumber:String(b.seasonNumber),reviewType:b.reviewType,reviewer:str(b.reviewer,100),date:b.date,score:b.score,checklist:b.checklist,priority:b.priority,review:str(b.review,5000),nextSteps,strengths,sessions,owner,due,status:'Open',createdAt:new Date().toISOString()};await store.setJSON('review/'+review.id,review);return res({review},201);
  }
  if(auth.role!=='admin')return res({error:'Administrator access required.'},403);
+ if(action==='reminderConfig'&&method==='GET')return res({staffAccessCode:env.STAFF_ACCESS_CODE});
  if(action==='followup'&&method==='POST'){
   if(!/^[a-zA-Z0-9-]{1,80}$/.test(b.reviewId??''))return res({error:'Invalid review identifier.'},400);
   const original=await store.get('review/'+b.reviewId,{type:'json'});if(!original)return res({error:'Review not found.'},404);
