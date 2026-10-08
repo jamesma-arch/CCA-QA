@@ -49,7 +49,7 @@ try{
   await store.setJSON('followup/'+followUp.id,followUp);original.status=b.status;original.owner=owner||original.owner;original.due=due;await store.setJSON('review/'+original.id,original);return res({followUp,review:original},201);
  }
  if(action==='staffDirectory'&&method==='POST'){
-  if(!Array.isArray(b.staff)||!b.staff.length||b.staff.length>100)return res({error:'Import between 1 and 100 staff records per request.'},400);
+  if(!Array.isArray(b.staff)||!b.staff.length||b.staff.length>500)return res({error:'Import between 1 and 500 staff records per request.'},400);
   let incoming;try{incoming=b.staff.map(validateStaff)}catch(e){return res({error:e.message},400)}
   if(new Set(incoming.map(s=>s.email)).size!==incoming.length)return res({error:'Duplicate staff emails in import batch.'},400);
   const usableId=v=>{const x=String(v??'').trim().toLowerCase();return x&&!['-','n/a','na','none','unknown','tbc'].includes(x)};
