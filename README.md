@@ -48,6 +48,12 @@ Visit `http://localhost:4173` and choose **Explore the demo**.
 | `STAFF_ACCESS_CODE` | A staff-only code/passphrase, ideally at least 12 random characters |
 | `ADMIN_ACCESS_CODE` | A different administrator-only code/passphrase |
 | `SESSION_SECRET` | A random secret with at least 32 characters |
+| `MS_TENANT_ID` | Microsoft Entra tenant ID for automatic reminders |
+| `MS_CLIENT_ID` | Microsoft Entra application/client ID |
+| `MS_CLIENT_SECRET` | Microsoft Entra client secret |
+| `MAIL_SENDER` | School mailbox used to send QA reminders |
+| `AUTO_REMINDER_ENABLED` | Set to `true` only after reminder setup has been tested |
+| `QA_SITE_URL` | Optional explicit live QA site URL used in reminder emails |
 
 To generate a session secret locally:
 
@@ -61,6 +67,12 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 9. Share the website address and staff code through your usual internal staff channel. Keep the administrator code separate.
 
 **Use a Git-connected Netlify deployment.** Dragging only the HTML files into Netlify Drop will not install the shared-record functions.
+
+## Automatic reminder emails
+
+The administrator can manually open a prepared reminder email and mark it Sent. When Microsoft 365 automation is configured, a scheduled Netlify Function checks every day at 08:00 Bangkok time. It sends one reminder when an active activity reaches its Review stage date, no qualifying observation has been submitted since that date, a verified school-lead email is available, and the reminder is not already marked Sent.
+
+Automatic sending uses Microsoft Graph application permission `Mail.Send`. IT should restrict the application's mailbox access to the intended sender mailbox where possible. Set `AUTO_REMINDER_ENABLED=true` only after the staff directory, review-stage dates and sender mailbox have been checked.
 
 ## Day-to-day use
 
@@ -76,7 +88,7 @@ Access uses shared codes with self-entered reviewer names, not individual school
 
 The app uses a site-wide Netlify Blobs store with strong consistency. Production deploys share `cca-qa-production`; non-production contexts use a separate store. Records survive new code deployments on the same Netlify project. They do not automatically move to a new Netlify project. Storage is configured in Singapore. Export CSV regularly for a readable backup; it is not a restore/import format.
 
-Do not enter pupil names or sensitive pupil information. Urgent safeguarding reporting follows school procedures; this app does not send emergency notifications. The app contains no email or SOCS integration.
+Do not enter pupil names or sensitive pupil information. Urgent safeguarding reporting follows school procedures; this app does not send emergency notifications. The app can send routine QA reminder emails through Microsoft Graph when the optional Microsoft 365 mail configuration is enabled. It does not use email for safeguarding alerts and it does not contain a SOCS integration.
 
 Review the hosting/access arrangement with the school before collecting actual staff/provider feedback. Shared-code access can be replaced with school SSO in a later version.
 
