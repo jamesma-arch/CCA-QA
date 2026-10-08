@@ -9,3 +9,39 @@ export function convertSchedule(sheet,{externalOnly=true}={}){const rows=sheet.d
 const result=[['Activity name','Provider','Year groups','School','Day','Season','Room / location','School lead','School lead email','Time','Muster point','Parent pick-up point','Backup room','Capacity','Current pupils','Staff support','Notes']],days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];let day='',skipped=0,total=0;
 for(let i=headerIndex+1;i<rows.length;i++){const r=rows[i],name=String(r[0]??'').trim();if(!name)continue;const heading=days.find(d=>new RegExp('^'+d+'\\b','i').test(name));if(heading){day=heading;continue}if(!/^(CCA|MUS|SPORT|ACA)\s*-/i.test(name))continue;total++;const leader=value(r,columns.leader),external=/\(external\)/i.test(leader);if(externalOnly&&!external){skipped++;continue}const shortDay=name.match(/^\w+\s*-\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b/i)?.[1],activityDay=shortDay?days.find(d=>d.slice(0,3).toLowerCase()===shortDay.toLowerCase()):day,years=value(r,columns.years).replace(/\.0$/,'').split(',').map(v=>/^\d+$/.test(v.trim())?'Y'+v.trim():v.trim()).join(', '),supports=[...new Set(supportCols.map(c=>value(r,c)).filter(Boolean))].join('; '),title=name.replace(/^\w+\s*-\s*(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\s*-\s*/i,'').replace(/\s*-\s*(Y\d.*|Reception)\s*$/i,'').trim();result.push([title,external?leader.replace(/\s*\(external\)\s*/i,'').trim():'School-led',years,'Lower School',activityDay||'',seasonName,value(r,columns.room),external?supports:leader,'',value(r,columns.time),value(r,columns.muster),value(r,columns.pickup),value(r,columns.backup),value(r,columns.capacity),value(r,columns.students),supports,value(r,columns.notes)]);}
 return {rows:result,total,skipped,season:seasonName};}
+
+
+export const STAFF_COLUMNS={
+ code:['code (initial)','code','initials','staff code','staff initials'],
+ title:['title'],
+ forename:['forename','first name','firstname'],
+ middle:['middle','middle name'],
+ surname:['surname','last name','lastname'],
+ preferredName:['preferred name','preferred'],
+ email:['school email address','school email','email address','email'],
+ teaching:['teaching','teaching status'],
+ status:['system status','status'],
+ roleType:['role type','role'],
+ division:['school division','division'],
+ employeeId:['employee id','employeeid','staff id']
+};
+const normalHeader=v=>String(v??'').trim().toLowerCase().replace(/\s+/g,' ');
+export function staffDirectorySheet(sheets){return sheets.find(s=>{const rows=s.data.slice(0,10);return rows.some(row=>{const headers=row.map(normalHeader);const has=k=>STAFF_COLUMNS[k].some(a=>headers.includes(a));return has('email')&&has('surname')&&(has('forename')||has('preferredName'));});});}
+export function prepareStaffRows(rows){
+ const errors=[],valid=[],emailSeen=new Set(),headerIndex=rows.slice(0,10).findIndex(row=>{const h=row.map(normalHeader),has=k=>STAFF_COLUMNS[k].some(a=>h.includes(a));return has('email')&&has('surname')&&(has('forename')||has('preferredName'));});
+ if(headerIndex<0)return{valid,errors:[{row:1,message:'Could not find staff directory headings.'}],stats:{records:0,emails:0}};
+ const headers=rows[headerIndex].map(normalHeader),mapping={};
+ for(const [key,aliases] of Object.entries(STAFF_COLUMNS))mapping[key]=headers.findIndex(h=>aliases.includes(h));
+ const emailPattern=/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+ for(let i=headerIndex+1;i<rows.length;i++){
+  if(rows[i].every(v=>v===null||String(v).trim()===''))continue;
+  const get=key=>mapping[key]>=0?String(rows[i][mapping[key]]??'').trim():'';
+  const staff={code:get('code'),title:get('title'),forename:get('forename'),middle:get('middle'),surname:get('surname'),preferredName:get('preferredName'),email:get('email').toLowerCase(),teaching:get('teaching'),status:get('status'),roleType:get('roleType'),division:get('division'),employeeId:get('employeeId')};
+  if(!emailPattern.test(staff.email)){errors.push({row:i+1,message:'missing or invalid school email'});continue}
+  if(!staff.surname||(!staff.forename&&!staff.preferredName)){errors.push({row:i+1,message:'missing staff name'});continue}
+  if(emailSeen.has(staff.email)){errors.push({row:i+1,message:'duplicate school email'});continue}
+  if(Object.values(staff).some(v=>v.length>300)){errors.push({row:i+1,message:'staff field too long'});continue}
+  emailSeen.add(staff.email);valid.push(staff);
+ }
+ return{valid,errors,stats:{records:valid.length,emails:emailSeen.size}};
+}
