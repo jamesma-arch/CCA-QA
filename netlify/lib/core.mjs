@@ -2,10 +2,12 @@ import {keyFor} from '../../public/import-data.js';
 import {createHmac,timingSafeEqual,randomUUID} from 'node:crypto';
 export const checks=['Register / attendance accurate','Clear instructions / routines','Resources ready and suitable','TA / staff role being used well','Positive relationships visible','Students engaged and purposeful','Safe organisation and supervision','Behaviour expectations clear','Differentiation / support evident','Dismissal / parent pick-up clear'];
 const operationalCorrection=a=>{
- if(String(a?.title||'').trim().toLowerCase()!=='chess coaching')return a;
- const day=String(a.day||'').toLowerCase(),years=String(a.years||'').toLowerCase().replace(/\s+/g,'');
- if(day==='monday'||(/y3/.test(years)&&/y4/.test(years)&&/y5/.test(years)))return {...a,lead:'Soh Ngamprom',leadEmail:''};
- if(day==='wednesday'||(/y2/.test(years)&&/y3/.test(years)&&!/y4/.test(years)))return {...a,lead:'Juvelyn Escabusa',leadEmail:''};
+ const title=String(a?.title||'').trim().toLowerCase(),day=String(a?.day||'').toLowerCase(),years=String(a?.years||'').toLowerCase().replace(/\s+/g,'');
+ if(title==='chess coaching'){
+  if(day==='monday'||(/y3/.test(years)&&/y4/.test(years)&&/y5/.test(years)))return {...a,lead:'Soh Ngamprom',leadEmail:''};
+  if(day==='wednesday'||(/y2/.test(years)&&/y3/.test(years)&&!/y4/.test(years)))return {...a,lead:'Juvelyn Escabusa',leadEmail:''};
+ }
+ if(title==='creative dot painting'&&day==='thursday'&&years==='y1')return {...a,lead:'Myshi Mackenzie',leadEmail:'myshi_ma@harrowschool.ac.th'};
  return a;
 };
 const res=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store',...extra}});
@@ -34,7 +36,7 @@ try{
  const all=async prefix=>{const result=await store.list({prefix});return (await Promise.all(result.blobs.map(x=>store.get(x.key,{type:'json'})))).filter(Boolean)};
  const activities=async()=>{const existing=await all('activity/');return [...seed.filter(a=>!existing.some(e=>e.id===a.id)),...existing].map(operationalCorrection)};
  const staffDirectory=async()=>{const current=await store.get('staff-directory/current',{type:'json'});return Array.isArray(current)?current:await all('staff/')};
- if(action==='data'&&method==='GET'){const reviews=await all('review/'),mailConfigured=!!(env.MS_TENANT_ID&&env.MS_CLIENT_ID&&env.MS_CLIENT_SECRET&&env.MAIL_SENDER),automation=auth.role==='admin'?{configured:mailConfigured,enabled:mailConfigured&&String(env.AUTO_REMINDER_ENABLED).toLowerCase()==='true',sender:env.MAIL_SENDER||'',schedule:'Daily at 08:00 Bangkok',trigger:'Activity review stage date'}:undefined;return res({role:auth.role,activities:await activities(),reviews:auth.role==='admin'?reviews:[],followUps:auth.role==='admin'?await all('followup/'):[],staffDirectory:auth.role==='admin'?await staffDirectory():[],reminders:auth.role==='admin'?await all('reminder-status/'):[],automation,reviewProgress:reviews.filter(r=>r.reviewType).map(({activityId,academicYear,seasonNumber,reviewType})=>({activityId,academicYear,seasonNumber,reviewType}))})}
+ if(action==='data'&&method==='GET'){const reviews=await all('review/'),acts=await activities(),rawReminders=auth.role==='admin'?await all('reminder-status/'):[],reminders=rawReminders.map(r=>{const a=acts.find(x=>x.id===r.activityId);if(a?.title==='Creative Dot Painting'&&a.day==='Thursday'&&String(a.years).replace(/\s+/g,'')==='Y1'&&String(r.recipientEmail||'').toLowerCase()!=='myshi_ma@harrowschool.ac.th')return {...r,sent:false,sentAt:'',source:'reset-after-lead-correction'};return r}),mailConfigured=!!(env.MS_TENANT_ID&&env.MS_CLIENT_ID&&env.MS_CLIENT_SECRET&&env.MAIL_SENDER),automation=auth.role==='admin'?{configured:mailConfigured,enabled:mailConfigured&&String(env.AUTO_REMINDER_ENABLED).toLowerCase()==='true',sender:env.MAIL_SENDER||'',schedule:'Daily at 08:00 Bangkok',trigger:'Activity review stage date'}:undefined;return res({role:auth.role,activities:acts,reviews:auth.role==='admin'?reviews:[],followUps:auth.role==='admin'?await all('followup/'):[],staffDirectory:auth.role==='admin'?await staffDirectory():[],reminders,automation,reviewProgress:reviews.filter(r=>r.reviewType).map(({activityId,academicYear,seasonNumber,reviewType})=>({activityId,academicYear,seasonNumber,reviewType}))})}
  if(action==='review'&&method==='POST'){
   const activity=(await activities()).find(a=>a.id===b.activityId&&a.active);if(!activity)return res({error:'Activity is unavailable. Refresh the activity list.'},400);
   if(!str(b.reviewer,100)||!str(b.review,5000)||!/^\d{4}-\d{2}-\d{2}$/.test(b.date??'')||!Number.isInteger(b.score)||b.score<1||b.score>5||!Array.isArray(b.checklist)||b.checklist.length!==checks.length||b.checklist.some(v=>!['yes','no','na'].includes(v))||!['Routine','Follow-up','Urgent'].includes(b.priority)||!str(b.nextSteps??'',5000)&&b.priority!=='Routine')return res({error:'Complete the observation, checklist, score and required next steps.'},400);
@@ -50,7 +52,7 @@ try{
  if(action==='reminderStatus'&&method==='POST'){
   if(!/^[a-zA-Z0-9-]{1,80}$/.test(b.activityId??'')||typeof b.sent!=='boolean')return res({error:'Invalid reminder status.'},400);
   const activity=(await activities()).find(a=>a.id===b.activityId);if(!activity)return res({error:'Activity not found.'},404);
-  const record={activityId:activity.id,sent:b.sent,sentAt:b.sent?new Date().toISOString():'',source:b.sent?'manual':'reset',updatedAt:new Date().toISOString()};
+  const record={activityId:activity.id,sent:b.sent,sentAt:b.sent?new Date().toISOString():'',source:b.sent?'manual':'reset',recipientEmail:b.sent?String(activity.leadEmail||'').toLowerCase():'',updatedAt:new Date().toISOString()};
   await store.setJSON('reminder-status/'+activity.id,record);return res({reminder:record});
  }
  if(action==='followup'&&method==='POST'){
