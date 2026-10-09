@@ -8,6 +8,7 @@ const operationalCorrection=a=>{
   if(day==='wednesday'||(/y2/.test(years)&&/y3/.test(years)&&!/y4/.test(years)))return {...a,lead:'Juvelyn Escabusa',leadEmail:''};
  }
  if(title==='creative dot painting'&&day==='thursday'&&years==='y1')return {...a,lead:'Myshi Mackenzie',leadEmail:'myshi_ma@harrowschool.ac.th'};
+ if(title==='street dance with chiyo'&&day==='friday'&&/y3/.test(years)&&/y4/.test(years)&&/y5/.test(years))return {...a,lead:'Arty Wongdies',leadEmail:'arty_wo@harrowschool.ac.th'};
  return a;
 };
 const res=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store',...extra}});
