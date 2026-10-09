@@ -1,6 +1,13 @@
 import {keyFor} from '../../public/import-data.js';
 import {createHmac,timingSafeEqual,randomUUID} from 'node:crypto';
 export const checks=['Register / attendance accurate','Clear instructions / routines','Resources ready and suitable','TA / staff role being used well','Positive relationships visible','Students engaged and purposeful','Safe organisation and supervision','Behaviour expectations clear','Differentiation / support evident','Dismissal / parent pick-up clear'];
+const operationalCorrection=a=>{
+ if(String(a?.title||'').trim().toLowerCase()!=='chess coaching')return a;
+ const day=String(a.day||'').toLowerCase(),years=String(a.years||'').toLowerCase().replace(/\s+/g,'');
+ if(day==='monday'||(/y3/.test(years)&&/y4/.test(years)&&/y5/.test(years)))return {...a,lead:'Soh Ngamprom',leadEmail:''};
+ if(day==='wednesday'||(/y2/.test(years)&&/y3/.test(years)&&!/y4/.test(years)))return {...a,lead:'Juvelyn Escabusa',leadEmail:''};
+ return a;
+};
 const res=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store',...extra}});
 const equal=(a,b)=>{const x=Buffer.from(String(a)),y=Buffer.from(String(b));return x.length===y.length&&timingSafeEqual(x,y)};
 const sign=(value,secret)=>createHmac('sha256',secret).update(value).digest('base64url');
@@ -25,7 +32,7 @@ try{
  if(action==='logout'&&method==='POST')return res({ok:true},200,{'Set-Cookie':'cca_session=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0'});
  if(!auth)return res({error:'Please sign in to continue.'},401);
  const all=async prefix=>{const result=await store.list({prefix});return (await Promise.all(result.blobs.map(x=>store.get(x.key,{type:'json'})))).filter(Boolean)};
- const activities=async()=>{const existing=await all('activity/');return [...seed.filter(a=>!existing.some(e=>e.id===a.id)),...existing]};
+ const activities=async()=>{const existing=await all('activity/');return [...seed.filter(a=>!existing.some(e=>e.id===a.id)),...existing].map(operationalCorrection)};
  const staffDirectory=async()=>{const current=await store.get('staff-directory/current',{type:'json'});return Array.isArray(current)?current:await all('staff/')};
  if(action==='data'&&method==='GET'){const reviews=await all('review/'),mailConfigured=!!(env.MS_TENANT_ID&&env.MS_CLIENT_ID&&env.MS_CLIENT_SECRET&&env.MAIL_SENDER),automation=auth.role==='admin'?{configured:mailConfigured,enabled:mailConfigured&&String(env.AUTO_REMINDER_ENABLED).toLowerCase()==='true',sender:env.MAIL_SENDER||'',schedule:'Daily at 08:00 Bangkok',trigger:'Activity review stage date'}:undefined;return res({role:auth.role,activities:await activities(),reviews:auth.role==='admin'?reviews:[],followUps:auth.role==='admin'?await all('followup/'):[],staffDirectory:auth.role==='admin'?await staffDirectory():[],reminders:auth.role==='admin'?await all('reminder-status/'):[],automation,reviewProgress:reviews.filter(r=>r.reviewType).map(({activityId,academicYear,seasonNumber,reviewType})=>({activityId,academicYear,seasonNumber,reviewType}))})}
  if(action==='review'&&method==='POST'){
@@ -77,7 +84,7 @@ try{
   try{for(const item of incoming){const previous=existing.find(a=>keyFor(a)===keyFor(item));const a={...previous,...item,id:previous?.id||randomUUID()};await store.setJSON('activity/'+a.id,a);existing.push(a);saved++;previous?updated++:added++}}catch{return res({error:'Import interrupted. Refresh and retry; matching activities will be updated.',saved,added,updated},503)}
   return res({saved,added,updated});
  }
- if(action==='activity'&&method==='POST'){let a;try{a=validateActivity(b)}catch(e){return res({error:e.message},400)}a.id=b.id||randomUUID();if(!/^[a-zA-Z0-9-]{1,80}$/.test(a.id))return res({error:'Invalid activity identifier.'},400);const previous=(await activities()).find(x=>x.id===a.id);a={...previous,...a};await store.setJSON('activity/'+a.id,a);return res({activity:a});}
+ if(action==='activity'&&method==='POST'){let a;try{a=operationalCorrection(validateActivity(b))}catch(e){return res({error:e.message},400)}a.id=b.id||randomUUID();if(!/^[a-zA-Z0-9-]{1,80}$/.test(a.id))return res({error:'Invalid activity identifier.'},400);const previous=(await activities()).find(x=>x.id===a.id);a={...previous,...a};await store.setJSON('activity/'+a.id,a);return res({activity:a});}
  if(action==='status'&&method==='POST'){if(!/^[a-zA-Z0-9-]{1,80}$/.test(b.id??'')||!['Open','In progress','Closed'].includes(b.status))return res({error:'Invalid action status.'},400);const review=await store.get('review/'+b.id,{type:'json'});if(!review)return res({error:'Review not found.'},404);review.status=b.status;await store.setJSON('review/'+review.id,review);return res({review});}
  return res({error:'Not found.'},404);
 }catch(e){console.error('CCA API error',e.name);return res({error:'Unable to save or load records. Please try again.'},500)}
