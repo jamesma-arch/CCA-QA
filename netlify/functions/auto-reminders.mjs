@@ -24,10 +24,12 @@ function directoryMatch(lead,directory){
   return null;
 }
 const operationalCorrection=a=>{
- if(String(a?.title||'').trim().toLowerCase()!=='chess coaching')return a;
- const day=String(a.day||'').toLowerCase(),years=String(a.years||'').toLowerCase().replace(/\s+/g,'');
- if(day==='monday'||(/y3/.test(years)&&/y4/.test(years)&&/y5/.test(years)))return {...a,lead:'Soh Ngamprom',leadEmail:''};
- if(day==='wednesday'||(/y2/.test(years)&&/y3/.test(years)&&!/y4/.test(years)))return {...a,lead:'Juvelyn Escabusa',leadEmail:''};
+ const title=String(a?.title||'').trim().toLowerCase(),day=String(a?.day||'').toLowerCase(),years=String(a?.years||'').toLowerCase().replace(/\s+/g,'');
+ if(title==='chess coaching'){
+  if(day==='monday'||(/y3/.test(years)&&/y4/.test(years)&&/y5/.test(years)))return {...a,lead:'Soh Ngamprom',leadEmail:''};
+  if(day==='wednesday'||(/y2/.test(years)&&/y3/.test(years)&&!/y4/.test(years)))return {...a,lead:'Juvelyn Escabusa',leadEmail:''};
+ }
+ if(title==='creative dot painting'&&day==='thursday'&&years==='y1')return {...a,lead:'Myshi Mackenzie',leadEmail:'myshi_ma@harrowschool.ac.th'};
  return a;
 };
 const todayBangkok=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
@@ -50,7 +52,7 @@ export default async()=>{
   const store=getStore({name:'cca-qa-production',consistency:'strong',region:'ap-southeast-1'}),today=todayBangkok();
   const [storedActivities,reviews,reminders]=await Promise.all([all(store,'activity/'),all(store,'review/'),all(store,'reminder-status/')]);
   const activities=[...seed.filter(a=>!storedActivities.some(e=>e.id===a.id)),...storedActivities].map(operationalCorrection),directory=await store.get('staff-directory/current',{type:'json'})||[],sent=new Map(reminders.map(r=>[r.activityId,r]));
-  const due=activities.filter(a=>a.active&&/^\d{4}-\d{2}-\d{2}$/.test(a.reviewStage||'')&&a.reviewStage<=today&&!sent.get(a.id)?.sent&&!reviews.some(r=>r.activityId===a.id&&r.date>=a.reviewStage));
+  const due=activities.filter(a=>{const record=sent.get(a.id),recipient=String(a.leadEmail||directoryMatch(a.lead,directory)?.email||'').toLowerCase(),alreadySent=record?.sent&&(!record.recipientEmail||String(record.recipientEmail).toLowerCase()===recipient);return a.active&&/^\d{4}-\d{2}-\d{2}$/.test(a.reviewStage||'')&&a.reviewStage<=today&&!alreadySent&&!reviews.some(r=>r.activityId===a.id&&r.date>=a.reviewStage)});
   if(!due.length){console.log('CCA automatic reminders: no reminders due.');return}
   const token=await graphToken(),siteUrl=(process.env.QA_SITE_URL||process.env.URL||'https://cca-qa.netlify.app/').replace(/\/+$/,'')+'/',results=[];
   for(const activity of due){
@@ -59,7 +61,7 @@ export default async()=>{
     const preferred=String(staff?.preferredName||'').trim(),fallback=String(activity.lead||'').trim().split(/\s+/)[0]||'colleague',name=preferred||fallback,subject=`CCA QA observation reminder – ${activity.title}`,body=`Dear Khun ${name},\n\nA quick reminder that the QA observation form for ${activity.title} (${activity.years}) is still showing as incomplete for the current review period.\n\nPlease could you complete the QA form when you have a chance.\n\nCCA QA form: ${siteUrl}\n\nPlease choose Staff login when you open the link.\nPassword is: ${process.env.STAFF_ACCESS_CODE}\n\nMany thanks,\nCCA Team`;
     try{
       await sendMail(token,{to:email,subject,body});
-      const now=new Date().toISOString(),record={activityId:activity.id,sent:true,sentAt:now,source:'automatic',triggerDate:activity.reviewStage,updatedAt:now};
+      const now=new Date().toISOString(),record={activityId:activity.id,sent:true,sentAt:now,source:'automatic',recipientEmail:email.toLowerCase(),triggerDate:activity.reviewStage,updatedAt:now};
       await store.setJSON('reminder-status/'+activity.id,record);results.push({activity:activity.title,status:'sent'});
     }catch(error){console.error('CCA automatic reminder failed for',activity.id,error.message);results.push({activity:activity.title,status:'failed'})}
   }
