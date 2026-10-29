@@ -1,5 +1,12 @@
 // Translate interface text only; form values and saved feedback stay unchanged.
 const TH = {
+"Activity review":"รีวิวกิจกรรม",
+"Opened from the Season Planner":"เปิดจาก Season Planner",
+"Your allocation: activity lead":"หน้าที่ของคุณ: ครูนำกิจกรรม",
+"Your allocation: activity support":"หน้าที่ของคุณ: ผู้ช่วยกิจกรรม",
+"Check the activity and season, then enter your name and complete the review. No review is submitted until you select Submit observation.":"ตรวจสอบกิจกรรมและฤดูกาล จากนั้นกรอกชื่อและเขียนรีวิว ระบบจะส่งรีวิวเมื่อคุณเลือกส่งผลการสังเกตเท่านั้น",
+"This Planner activity is unavailable. Return to the Planner and open it again.":"ไม่พบกิจกรรมนี้ โปรดกลับไปที่ Planner แล้วเปิดอีกครั้ง",
+
 "Activities awaiting observation":"กิจกรรมที่ยังรอการสังเกต","Based on the selected filters and date range. Use the reminder action to contact the school lead.":"อ้างอิงจากตัวกรองและช่วงวันที่ที่เลือก ใช้ปุ่มเตือนเพื่อติดต่อครูผู้รับผิดชอบ","outstanding":"ค้างอยู่","Activity":"กิจกรรม","Year group(s)":"ระดับชั้น","Provider":"ผู้จัดกิจกรรม","Day":"วัน","School lead":"ครูผู้รับผิดชอบ","Reminder":"การเตือน","Email reminder":"ส่งอีเมลเตือน","Add email":"เพิ่มอีเมล","School lead email":"อีเมลครูผู้รับผิดชอบ","All active activities have been reviewed.":"กิจกรรมที่เปิดใช้งานทั้งหมดได้รับการประเมินแล้ว","Add a valid school lead email first.":"กรุณาเพิ่มอีเมลครูผู้รับผิดชอบที่ถูกต้องก่อน","Activity not found. Refresh and try again.":"ไม่พบกิจกรรม โปรดรีเฟรชแล้วลองอีกครั้ง",
 "Review flagged activities and record your follow-up checks.":"ตรวจสอบกิจกรรมที่ต้องติดตามและบันทึกผลตรวจของคุณ",
 "Follow-up checks":"การตรวจติดตาม","Follow-up checks required":"รายการที่ต้องตรวจติดตาม","Reviews below 4/5 or marked Follow-up or Urgent appear here until resolved.":"ผลประเมินต่ำกว่า 4/5 หรือระบุให้ติดตามหรือเร่งด่วนจะแสดงที่นี่จนกว่าจะแก้ไขแล้ว","QA score below 4/5":"คะแนนคุณภาพต่ำกว่า 4/5","Staff requested follow-up":"บุคลากรขอให้ติดตาม","Follow-up required":"ต้องตรวจติดตาม","Write follow-up review":"บันทึกผลตรวจติดตาม","Follow-up history":"ประวัติการติดตาม","View all follow-up checks":"ดูรายการติดตามทั้งหมด","No follow-up checks outstanding.":"ไม่มีรายการค้างติดตาม","Resolved follow-up checks":"รายการติดตามที่แก้ไขแล้ว","No resolved follow-up checks yet.":"ยังไม่มีรายการติดตามที่แก้ไขแล้ว","Original staff review":"ผลประเมินเดิมของบุคลากร","Follow-up date":"วันที่ตรวจติดตาม","Follow-up QA score":"คะแนนคุณภาพหลังติดตาม","Follow-up findings":"สิ่งที่พบจากการติดตาม","Outcome":"ผลการติดตาม","Save follow-up review":"บันทึกผลติดตาม","Follow-up review saved":"บันทึกผลติดตามแล้ว","Keep In progress if further checks are needed. Close only when the follow-up is satisfactory and the score is at least 4/5.":"เลือกกำลังดำเนินการหากยังต้องตรวจเพิ่ม ปิดรายการเมื่อผลการติดตามเป็นที่น่าพอใจและคะแนนอย่างน้อย 4/5",
@@ -242,3 +249,4 @@ export function translatePage(){
  observer.observe(document.body,{childList:true,subtree:true,characterData:true});
 }
 translatePage();
+

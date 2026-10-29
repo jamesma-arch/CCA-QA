@@ -21,3 +21,5 @@
 .activity-art{flex-basis:94px;width:94px;filter:drop-shadow(0 4px 6px #17324a10)}@media(max-width:420px){.activity-art{flex-basis:72px;width:72px}}
 
 .followup-queue{border-left:6px solid var(--gold);margin-bottom:24px}.followup-item{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:20px 0;border-top:1px solid var(--line)}.followup-item>div{flex:1;min-width:0}.followup-item button{flex-shrink:0}.followup-item h3{margin:0 0 8px}.followup-alert{background:#fff1d6;padding:12px;border-left:4px solid var(--gold)}.followup-original,.followup-note{padding:16px;background:#f2f6fa;border-radius:8px;margin:14px 0}.followup-history{margin:16px 0}.followup-history summary{cursor:pointer;font-weight:650}.followup-note p{white-space:pre-wrap}@media(max-width:720px){.followup-item{flex-direction:column}.followup-item button{width:100%}}
+
+.planner-review-context{border:1px solid #d4dfd6;border-left:4px solid #b79b61;border-radius:8px;background:#f3f6f0;padding:18px 22px;margin-bottom:24px}.planner-review-context p{font-size:14px;line-height:1.7;margin:7px 0}

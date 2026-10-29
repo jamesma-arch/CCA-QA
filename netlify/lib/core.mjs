@@ -1,3 +1,4 @@
+import {receivePlannerActivity} from './planner-link.mjs';
 import {keyFor} from '../../public/import-data.js';
 import {createHmac,timingSafeEqual,randomUUID} from 'node:crypto';
 export const checks=['Register / attendance accurate','Clear instructions / routines','Resources ready and suitable','TA / staff role being used well','Positive relationships visible','Students engaged and purposeful','Safe organisation and supervision','Behaviour expectations clear','Differentiation / support evident','Dismissal / parent pick-up clear'];
@@ -21,9 +22,10 @@ export function makeHandler({store,env,seed=[]}){return async function(req){
 try{
  const url=new URL(req.url),action=url.searchParams.get('action')||'data',method=req.method;
  if(!['GET','POST'].includes(method))return res({error:'Method not allowed.'},405);
- if(method==='POST'&&req.headers.get('origin')!==url.origin)return res({error:'Request origin not permitted.'},403);
+ if(method==='POST'&&action!=='planner-sync'&&req.headers.get('origin')!==url.origin)return res({error:'Request origin not permitted.'},403);
  if(!env.STAFF_ACCESS_CODE||!env.ADMIN_ACCESS_CODE||!env.SESSION_SECRET||env.SESSION_SECRET.length<32||env.STAFF_ACCESS_CODE===env.ADMIN_ACCESS_CODE)return res({error:'Staff access has not been configured. Ask the CCA administrator to complete setup.'},503);
- let b={};if(method==='POST'){const maxBody=action==='staffDirectory'?500000:60000;if(Number(req.headers.get('content-length'))>maxBody)return res({error:'Request too large.'},413);const raw=await req.text();if(raw.length>maxBody)return res({error:'Request too large.'},413);try{b=JSON.parse(raw)}catch{return res({error:'Invalid request.'},400)}}
+ let b={},rawBody='';if(method==='POST'){const maxBody=action==='staffDirectory'?500000:60000;if(Number(req.headers.get('content-length'))>maxBody)return res({error:'Request too large.'},413);const raw=await req.text();rawBody=raw;if(raw.length>maxBody)return res({error:'Request too large.'},413);try{b=JSON.parse(raw)}catch{return res({error:'Invalid request.'},400)}}
+ if(action==='planner-sync'&&method==='POST')return receivePlannerActivity(rawBody,req.headers.get('x-planner-signature'),{store,env});
  const cookie=req.headers.get('cookie')?.split('; ').find(x=>x.startsWith('cca_session='))?.slice(12);let auth;
  if(cookie){const [payload,sig]=cookie.split('.');if(sig&&equal(sign(payload,env.SESSION_SECRET),sig)){try{auth=JSON.parse(Buffer.from(payload,'base64url'));if(auth.exp<Date.now()||!['staff','admin'].includes(auth.role)||auth.rev!==sign(auth.role==='admin'?env.ADMIN_ACCESS_CODE:env.STAFF_ACCESS_CODE,env.SESSION_SECRET))auth=null}catch{auth=null}}}
  if(action==='login'&&method==='POST'){
@@ -92,3 +94,4 @@ try{
  return res({error:'Not found.'},404);
 }catch(e){console.error('CCA API error',e.name);return res({error:'Unable to save or load records. Please try again.'},500)}
 };}
+
