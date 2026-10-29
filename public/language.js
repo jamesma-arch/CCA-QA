@@ -1,5 +1,9 @@
 // Translate interface text only; form values and saved feedback stay unchanged.
 const TH = {
+"Move guide":"ลากคู่มือ",
+"Reset position":"คืนตำแหน่ง",
+"Use arrow keys to move, Shift for larger steps, or Home to reset.":"ใช้ปุ่มลูกศรเพื่อย้าย กด Shift เพื่อย้ายมากขึ้น หรือ Home เพื่อคืนตำแหน่ง",
+
 "Activity review":"รีวิวกิจกรรม",
 "Opened from the Season Planner":"เปิดจาก Season Planner",
 "Your allocation: activity lead":"หน้าที่ของคุณ: ครูนำกิจกรรม",
